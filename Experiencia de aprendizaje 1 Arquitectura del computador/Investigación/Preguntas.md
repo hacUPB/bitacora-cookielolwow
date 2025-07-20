@@ -1,26 +1,30 @@
-### Actividad 1
+## Actividad 1
 
 
-## - ¿Qué es un computador digital moderno?
+### - ¿Qué es un computador digital moderno?
 
 
-## - ¿Cuáles son sus partes?
+### - ¿Cuáles son sus partes?
 
 
-### Actividad 2
+## Actividad 2
 
-## - ¿Qué es entonces un programa?
-
-
-## - ¿Qué es un lenguaje ensamblador?
+### - ¿Qué es entonces un programa?
 
 
-## - ¿Qué es lenguaje de máquina?
-
-### Actividad 3
+### - ¿Qué es un lenguaje ensamblador?
 
 
-## - ¿Qué son PC, D y A?
+### - ¿Qué es lenguaje de máquina?
+
+## Actividad 3
 
 
-## - ¿Para qué los usa la CPU?
+### - ¿Qué son PC, D y A?
+
+
+### - ¿Para qué los usa la CPU?
+
+
+## Actividad 4
+
