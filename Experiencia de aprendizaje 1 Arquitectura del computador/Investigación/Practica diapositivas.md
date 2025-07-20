@@ -2,7 +2,7 @@
 
 ### mover el contenido de la posición 200 a la 100 
 
-
+```
 @200 
 
 
@@ -25,11 +25,11 @@ D = A
 
 
 M = D 
-
+```
 
 ### En la posición 3 lo que tiene restarle 15 
 
-
+```
 @15  
 
 
@@ -40,10 +40,9 @@ M = D
 
 
 M=M-D  
-
-
+```
 ### Ram[2]=Ram[0]+ram[1]+17 
-
+```
 
 @0  
 
@@ -67,3 +66,4 @@ D=D+A 
 
 
 M=D  
+```
