@@ -15,6 +15,15 @@ Entendi mejor que las variables se almacenan a partir de la dirección 16 en ade
 ## EJERCICIO 10##
 * Para este ejercicio cargue el valor M de R0 en el registro  D, para multiplicarlo por 2 asigne en D la suma D + D. Luego fui a R1 y guarde el resultado en el.
 
+## EJERCICIO 11##
+* En este ejercicio hice un programa que cuenta de 1000 a 0 usando un ciclo. Entendi mejor que las etiquetas (LOOP, CONT) sirven para saltar a partes del código. Me ayudó a entender mejor cómo funcionan los ciclos y condiciones.
 
+## EJERCICIO 12##
+* Lograr enteter como funciona el porgrama fue dificil pero no imposible, el tema de las etiquetas loop y cont es bastante confuso, pero al final el programa verificó si R0 es mayor o igual que cero, guardo 1 o -1 dn R1 dependiendo de si o era o no. 
 
+## EJERCICIO 14##
+* En este ejercicio tenia que poner el valor de la ram de R1 en R4, fue usando las primeras cosas que aplicamos en el curso.
+
+## EJERCICIO 15##
+*¿¿
 
