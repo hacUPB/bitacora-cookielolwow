@@ -27,8 +27,7 @@
     M=D
     
     //- ¿Qué hace este programa?
-    // Respuesta: Este programa inicializa la variable `i` en 1, la variable `sum`
-    // en 0, luego suma el valor de `i` a `sum` y finalmente incrementa `i` en 1.
+    // Respuesta: Este programa inicializa la variable `i` en 1, la variable `sum` en 0, luego suma el valor de `i` a `sum` y finalmente incrementa `i` en 1.
 
     //- ¿En qué parte de la memoria RAM está la variable `i` y `sum`? ¿Por qué en esas posiciones?
     // Respuesta: La variable `i` está en la posición 16 y `sum` en la posición 17, ya que las variables se asignan a partir de la posición 16 en adelante.
