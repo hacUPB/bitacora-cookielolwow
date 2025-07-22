@@ -71,10 +71,6 @@ M=D
 ```
 ### Sumarle 20 a la que ya está en el registro 16 
 ```
-@16384  
-
-D=A  
-
 @16  
 
 M=D  
