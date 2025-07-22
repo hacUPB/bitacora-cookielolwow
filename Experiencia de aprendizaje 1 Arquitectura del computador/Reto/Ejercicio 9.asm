@@ -7,7 +7,7 @@
     i = i + 1
 
     
-    La traducción a lenguaje ensamblador del programa anterior es:
+    //La traducción a lenguaje ensamblador del programa anterior es:
     
     // i = 1
     @i
@@ -33,5 +33,5 @@
     // Respuesta: La variable `i` está en la posición 16 y `sum` en la posición 17, ya que las variables se asignan a partir de la posición 16 en adelante.
    
     //- Optimiza esta parte del código para que use solo dos instrucciones:
-  @i
-   M=M+1
+    @i
+    M=M+1
