@@ -28,6 +28,5 @@ Entendi mejor que las variables se almacenan a partir de la dirección 16 en ade
 * Para hacer este ejercicio inicie poniendo un (loop), luego fui al registro R0 y su M la use como address en la Ram, luego puse el -1 en m para asi en la direccion de R1 restarselo ahi a la m, el resultado lo guarde en d y de ahi fui nuevamente a R1 para sumarle 1 y puse una condicion que revisara si d era diferente de 0, si lo era repetiria este bucle la cantidad de veces que decia en R1 para en esa seccion poner los -1.
 
 ## EJERCICIO 16##
-* En este ejercicio primero inicialice arr en 10 para establecer el tamaño del arreglo, sum en 0 y j en 0 para inicializar el contador; luego, cree una etiqueta (LOOP)en la cual cargue j, accediste al elemento arr[j], lo sumaste a sum, incrementaste j y comparaste con 10 para decidir si repetir el ciclo o finalizarlo en (END), donde usaste un salto incondicional para detener la ejecución.
-  
+* En este ejercicio primero inicialice arr en 10 para establecer el tamaño del arreglo, sum en 0 y j en 0 ; luego, cree una etiqueta (LOOP)en la cual cargue j y inicialice el contador para acceder a arr, contar los espacios que tenia y cada uno lo sume a sum,  incremente j y comparecon 10 para decidir si repetir el ciclo o finalizarlo en (END)
 
