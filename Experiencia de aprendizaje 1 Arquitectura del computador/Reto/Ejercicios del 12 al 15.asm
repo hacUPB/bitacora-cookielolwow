@@ -51,4 +51,14 @@ M=1
 //En la posición R0 está almacenada la dirección inicial de una región de memoria.
 //En la posición R1 está almacenado el tamaño de la región de memoria.
 //Almacena un -1 en esa región de memoria.
-NO ENTENDI
+(LOOP)
+@RO
+A=M
+M=-1
+@R1
+M=M-1
+D=M
+@R0
+M=M+1
+@LOOP
+D;JNE
