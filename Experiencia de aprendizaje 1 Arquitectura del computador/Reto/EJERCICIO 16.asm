@@ -14,6 +14,10 @@ D=M
 (loop)
 @j
 A=D+M
+D=M
+@sum
+M=M+D
+
 
 
 
