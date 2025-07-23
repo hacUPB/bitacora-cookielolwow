@@ -7,7 +7,7 @@
         sum = sum + arr[j];
     }
     
-    
+@arr
     //- ¿Qué hace este programa?
     //- ¿Cuál es la dirección base de arr en la memoria RAM?
     //- ¿Cuál es la dirección base de sum en la memoria RAM y por qué?
