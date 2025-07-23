@@ -25,5 +25,8 @@ Entendi mejor que las variables se almacenan a partir de la dirección 16 en ade
 * En este ejercicio tenia que poner el valor de la ram de R1 en R4, fue usando las primeras cosas que aplicamos en el curso.
 
 ## EJERCICIO 15##
-*¿¿
+* Para hacer este ejercicio inicie poniendo un (loop), luego fui al registro R0 y su M la use como address en la Ram, luego puse el -1 en m para asi en la direccion de R1 restarselo ahi a la m, el resultado lo guarde en d y de ahi fui nuevamente a R1 para sumarle 1 y puse una condicion que revisara si d era diferente de 0, si lo era repetiria este bucle la cantidad de veces que decia en R1 para en esa seccion poner los -1.
+
+## EJERCICIO 16##
+* 
 
