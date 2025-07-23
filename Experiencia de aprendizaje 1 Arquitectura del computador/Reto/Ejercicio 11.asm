@@ -40,7 +40,7 @@
 //La primera instrucción es @1000 y está almacenada en ROM[0].
 
 // - ¿Qué son CONT y LOOP?
-//CONT y LOOP son etiquetas o labels.
+//CONT y LOOP son etiquetas o labels. Cont se usa como contador y LOOP para realizar bucles.
 
 //- ¿Cuál es la diferencia entre los símbolos `i` y `CONT`?
 //i es una variable de datos, almacenada en RAM.
