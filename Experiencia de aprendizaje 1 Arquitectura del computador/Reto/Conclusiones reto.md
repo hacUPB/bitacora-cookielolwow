@@ -18,7 +18,7 @@ Entendi mejor que las variables se almacenan a partir de la dirección 16 en ade
 ## EJERCICIO 11 ##
 * En este ejercicio hice un programa que cuenta de 1000 a 0 usando un ciclo. Entendi mejor que las etiquetas (LOOP, CONT) sirven para saltar a partes del código. Me ayudó a entender mejor cómo funcionan los ciclos y condiciones.
 
-## EJERCICIO 12##
+## EJERCICIO 12 ##
 * Lograr enteter como funciona el porgrama fue dificil pero no imposible, el tema de las etiquetas loop y cont es bastante confuso, pero al final el programa verificó si R0 es mayor o igual que cero, guardo 1 o -1 dn R1 dependiendo de si o era o no. 
 
 ## EJERCICIO 14 ##
@@ -29,4 +29,17 @@ Entendi mejor que las variables se almacenan a partir de la dirección 16 en ade
 
 ## EJERCICIO 16 ##
 * En este ejercicio primero inicialice arr en 10 para establecer el tamaño del arreglo, sum en 0 y j en 0 ; luego, cree una etiqueta (LOOP)en la cual cargue j y inicialice el contador para acceder a arr, contar los espacios que tenia y cada uno lo sume a sum,  incremente j y comparecon 10 para decidir si repetir el ciclo o finalizarlo en (END)
+
+## EJERCICIO 17 ##
+* Para este ejercicio primero cargue el número 7 en A ,luego a en D puse D - 7 para verificar que el numero fuera igual a 0 D = D - 7 , luego me dirigi a la direccion 69 por Si (D - 7) == 0, salta a ROM[69].
+
+## EJERCICIO 18 ##
+* ![alt text](image.png)
+
+## EJERCICIO 19 ## 
+* Este programa parece estar diseñado para USAR con la pantalla y el teclado, utiliza direcciones como el @24576 que corresponden a estos dispositivos.
+
+## EJERCICIO 20 ##
+* En este ejercicio cree antes del (draw) un sistema que detectara si la tecla d esta presionada, en este use el @24567 que es el correspondiente a la tecla, si este valor era igual a 100 (valor que se ponia si se presionaba) saltaba al (draw).
+
 
