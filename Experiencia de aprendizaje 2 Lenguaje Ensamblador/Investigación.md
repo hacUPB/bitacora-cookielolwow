@@ -387,8 +387,7 @@ M=M+1
     @clean
     D;JEQ        
  
-    @LOOP
-    0;JMP    
+     
 
     (DRAW)
 
@@ -399,3 +398,33 @@ M=M+1
   (END)
 
 ```
+Tenia un error que dejaba al codigo seguir y no lo atrapaba en el loop. El error era la falta de estas lineas
+```asm
+@LOOP
+0;JMP
+```
+```asm
+(LOOP)
+       
+    @24576
+    D=M         
+    @100
+    D=D-A       
+    @draw
+    D;JEQ       
+    @24576
+    D=M
+    @101         
+    D=D-A
+    @clean
+    D;JEQ        
+    @LOOP
+    0;JMP    
+
+    (DRAW)
+
+  (clean)
+      
+  (CLEAN_loop)
+
+  (END)
