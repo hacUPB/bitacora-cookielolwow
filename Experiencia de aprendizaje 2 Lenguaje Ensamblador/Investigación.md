@@ -12,7 +12,7 @@ Ciertas direcciones de la memoria RAM están reservadas para comunicarse con dis
 Darles valores de -1 a numeros a partir del 16384
 
 ```
-asm
+.asm
 // Dirección de la pantalla
 @SCREEN
 D=A
