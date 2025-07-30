@@ -439,3 +439,28 @@ Tenia un error que dejaba al codigo seguir y no lo atrapaba en el loop. El error
 - Con el operador &. p = &a;
 4. ¿Cómo se escribe el contenido de la variable a la que apunta un puntero?
  - Con el operador . p = 20;. En este caso como p contiene la dirección de a entonces p a la izquierda del igual indica que quieres actualizar el valor de la variable a.
+
+Ahora vamos a acercarnos al concepto de puntero. Un puntero es una variable que almacena la dirección de memoria de otra variable. Observa el siguiente programa escrito en C++:
+```C++
+int var = 10;
+int *p;
+p = &var;
+*p = 20;
+```
+```asm
+@10
+D=A
+@var
+M=D
+@var
+D=A
+@p
+M=D
+@20
+D=A
+@p
+A=M
+M=D
+
+
+```
