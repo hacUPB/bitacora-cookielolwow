@@ -1,3 +1,5 @@
+## RETO 1
+
 1. Escribe un programa en lenguaje ensamblador que sume los primeros 100 números naturales.
     
     ```cpp
@@ -83,4 +85,24 @@ Con etiquetas de bucle ((LOOP), (END)) y comparaciones/saltos:
 - El número almacenado en esa dirección de memoria.
 
 **RAE2**
+
+
 Primero probé que las variables i, sum y limit se inicializaran correctamente.Luego para probar la condición, usé valores distintos para i (como 50, 100 y 101) y observé si el programa saltaba correctamente a END. Esto me ayudó a validar que el ciclo se detendría en el momento justo cuando i > 100. Después verifiqué si la suma funcionaba bien y el incremento de i. Finalmente, ejecuté todo el programa completo, con la suma de los primeros 100 números naturales y el progfama funciono como queria.
+
+## RETO 2
+Transforma el programa en alto nivel anterior para que utilice un ciclo for en vez de un ciclo while.
+
+
+**RAE1**
+```cpp
+int sum = 0;
+for (int i = 1; i <= 100; i++) {
+    sum += i;
+}
+
+```
+
+**RAE2**
+
+Primero verifiqué que la variable sum comenzara en 0 y que i empezara en 1.Luego verifiqué que el ciclo se repitiera solo hasta que i fuera 100. Verifiqué que se sumaran correctamente los valores en cada iteración.
+Probar el programa por partes me permitió asegurarme de que cada componente (inicialización, condición, acumulación e incremento) funcionara de forma independiente antes de ejecutar el ciclo completo. 
