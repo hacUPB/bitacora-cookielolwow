@@ -106,3 +106,116 @@ for (int i = 1; i <= 100; i++) {
 
 Primero verifiqué que la variable sum comenzara en 0 y que i empezara en 1.Luego verifiqué que el ciclo se repitiera solo hasta que i fuera 100. Verifiqué que se sumaran correctamente los valores en cada iteración.
 Probar el programa por partes me permitió asegurarme de que cada componente (inicialización, condición, acumulación e incremento) funcionara de forma independiente antes de ejecutar el ciclo completo. 
+
+## RETO 3
+Escribe un programa en lenguaje ensamblador que implemente el programa anterior.
+**RAE1**
+```asm
+// Inicialización
+@i
+M=1           
+
+@sum
+M=0           
+
+@limit
+M=100         
+
+(LOOP)
+@i
+D=M           
+@limit
+D=D-M         
+@END
+D;JGT         
+
+// sum += i
+@i
+D=M
+@sum
+M=M+D
+
+// i++
+@i
+M=M+1
+
+@LOOP
+0;JMP         
+
+(END)
+@END
+0;JMP         
+```
+**RAE2**
+
+
+Primero probé por separado la inicialización de las variables i, sum y limit, observando en la RAM que tuvieran los valores esperados (1, 0 y 100 respectivamente). Luego verifiqué que la condición del ciclo (i <= 100) se evaluara correctamente, modificando manualmente el valor de i para comprobar que el salto al final (END) solo ocurriera cuando i fuera mayor a 100. También probé que la acumulación (sum += i) funcionara correctamente asignando valores conocidos a i y sum y verificando el resultado después de la suma. Finalmente, verifiqué que el incremento (i++) aumentara el valor correctamente. Después de confirmar que cada parte funcionaba de forma individual, corrí el programa completo desde el simulador y comprobé que el valor final de sum fuera 5050.
+
+## RETO 4
+4. Ahora vamos a acercarnos al concepto de puntero. Un puntero es una variable que almacena la dirección de memoria de otra variable. Observa el siguiente programa escrito en C++:
+    
+    ```cpp
+    int a = 10;
+    int *p;
+    p = &a;
+    *p = 20;
+    ```
+
+
+El programa anterior modifica el contenido de la variable `a` por medio de la variable `p`. `p` es un puntero porque almacena la dirección de memoria de la variable `a`. En este caso el valor de la variable `a` será 20 luego de ejecutar `*p = 20;`. 
+    
+**¿Cómo se declara un puntero en C++?** 
+
+
+- `int *p;`. `p` es una variable que almacenará la dirección de un variable que almacena enteros.
+
+**¿Cómo se define un puntero en C++?** 
+- `p = &a;`. Definir el puntero es inicializar el valor del puntero, es decir, guardar la dirección de una variable. En este caso `p` contendrá la dirección de `a`.
+
+
+**¿Cómo se almacena en C++ la dirección de memoria de una variable?** 
+- Con el operador `&`. `p = &a;`
+
+
+**¿Cómo se escribe el contenido de la variable a la que apunta un puntero?**
+
+- Con el operador . `p = 20;`. En este caso como `p` contiene la dirección de `a` entonces `p` a la izquierda del igual indica que quieres actualizar el valor de la variable `a`.
+
+
+
+
+## RETO 5
+
+Traduce este programa a lenguaje ensamblador:
+```CPP
+int a = 10;
+int *p;
+p = &a;
+*p = 20;
+**RAE1**
+```
+
+```asm
+@10
+D=A
+@var
+M=D
+@var
+D=A
+@p
+M=D
+@20
+D=A
+@p
+A=M
+M=D
+
+```
+
+**RAE2**
+
+
+Inicialmente comprobé que el valor 10 se almacenara correctamente en la variable var, observando en la RAM que la dirección asignada a var (por ejemplo, RAM[16]) tuviera ese valor. Luego, verifiqué que p guardara la dirección de var, comprobando que p (por ejemplo, RAM[17]) contuviera el número 16. Posteriormente, revisé que la instrucción @p seguida de A=M permitiera acceder indirectamente a la dirección guardada en p, y que efectivamente allí se almacenara el nuevo valor 20. Para confirmar que todo funcionaba correctamente, ejecuté el programa completo paso a paso en el simulador Hack y observé que inicialmente var = 10, luego p contenía la dirección de var, y al final var era actualizado a 20 a través de esa dirección guardada.
+
+
+
