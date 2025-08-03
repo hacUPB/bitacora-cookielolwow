@@ -429,38 +429,3 @@ Tenia un error que dejaba al codigo seguir y no lo atrapaba en el loop. El error
 
   (END)
 ```
-
-## retos
-1. ¿Cómo se declara un puntero en C++?  
-- int *p;. Se declara primero con el tipo de dato , un asterisco y el nombre de la variable.
-2. ¿Cómo se define un puntero en C++? 
--  Es inicializar el valor del puntero guardando la dirección de una variable. En este caso p contendrá la dirección de a.
-3. ¿Cómo se almacena en C++ la dirección de memoria de una variable?
-- Con el operador &. p = &a;
-4. ¿Cómo se escribe el contenido de la variable a la que apunta un puntero?
- - Con el operador . p = 20;. En este caso como p contiene la dirección de a entonces p a la izquierda del igual indica que quieres actualizar el valor de la variable a.
-
-Ahora vamos a acercarnos al concepto de puntero. Un puntero es una variable que almacena la dirección de memoria de otra variable. Observa el siguiente programa escrito en C++:
-```C++
-int var = 10;
-int *p;
-p = &var;
-*p = 20;
-```
-```asm
-@10
-D=A
-@var
-M=D
-@var
-D=A
-@p
-M=D
-@20
-D=A
-@p
-A=M
-M=D
-
-
-```
