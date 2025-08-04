@@ -42,7 +42,7 @@ M=M+1
 (END)
 @END
 0;JMP       
-```
+    ```
     
 **¿Cómo están implementadas las variables `i` y `sum`?**
 - Se definen con etiquetas simbólicas (@i, @sum), i esta en RAM[16], sum en RAM[17].
@@ -187,15 +187,16 @@ El programa anterior modifica el contenido de la variable `a` por medio de la 
 ## RETO 5
 
 Traduce este programa a lenguaje ensamblador:
-```CPP
+ ```CPP
 int a = 10;
 int *p;
 p = &a;
 *p = 20;
-**RAE1**
 ```
 
-```asm
+**RAE1**
+ 
+ ```asm
 @10
 D=A
 @var
@@ -217,5 +218,99 @@ M=D
 
 Inicialmente comprobé que el valor 10 se almacenara correctamente en la variable var, observando en la RAM que la dirección asignada a var (por ejemplo, RAM[16]) tuviera ese valor. Luego, verifiqué que p guardara la dirección de var, comprobando que p (por ejemplo, RAM[17]) contuviera el número 16. Posteriormente, revisé que la instrucción @p seguida de A=M permitiera acceder indirectamente a la dirección guardada en p, y que efectivamente allí se almacenara el nuevo valor 20. Para confirmar que todo funcionaba correctamente, ejecuté el programa completo paso a paso en el simulador Hack y observé que inicialmente var = 10, luego p contenía la dirección de var, y al final var era actualizado a 20 a través de esa dirección guardada.
 
+## RETO 6 & 7
+6. Ahora vas a usar un puntero para leer la posición de memoria a la que este apunta, es decir, vas a leer por medio del puntero la variable cuya dirección está almacenada en él.
+  
+```CPP
+int a = 10;
+int b = 5;
+int *p;
+p = &a;
+b = *p;
+```
+7.  Traduce este programa a lenguaje ensamblador
 
 
+**RAE1**
+
+    ```asm
+@10
+D=A
+@VAR1
+M=D
+@5
+D=A
+@VAR2
+M=D
+@VAR1
+D=A
+@P
+M=D
+@P
+A=M
+D=M
+@VAR2
+M=D
+   
+    ```
+
+**RAE2**
+
+
+Para lograr traducir este programa primero a cree las variables y les puse sus respectivos valores (VAR1=10 Y VAR2=5), cree el puntero para asia asi asignarle la direccion de VAR1. Luego use el puntero para irme a la direccion que tenia asignada y le saque su valor para lluego asignarselo a la VAR2.
+
+## RETO 8
+
+Vas a parar un momento y tratarás de recodar de memoria lo siguiente. Luego verifica con un compañero o con el profesor.
+1. ¿Qué hace esto `int *pvar;`?
+
+- Crea un puntero.
+      
+2. ¿Qué hace esto `pvar = var;`?
+
+- No existe. Hace falta un "&" o "*"
+    
+3. ¿Qué hace esto `var2 = *pvar`?
+
+- Le asigna a var2 el valor al que apunta el puntero.
+
+  
+4. ¿Qué hace esto `pvar = &var3`?
+
+- Apunta a la dirección de var3.
+
+## RETO 9
+
+Vas a proponer una posible traducción a lenguaje ensamblador de la función `suma`, cómo llamar a suma y cómo regresar a `std::cout  << "El valor de c es: " << c << std::endl; ` una vez suma termine.
+#include <iostream>
+```CPP
+int suma(int a, int b) {
+   int var = a + b;
+   return var;
+}
+
+
+int main() {
+   int c = suma(6, 9);
+   std::cout << "El valor de c es: " << c << std::endl;
+   return 0;
+}
+```
+```asm
+(MAIN)
+ASYFGDJSFI
+@SUMA
+
+
+
+(SUMA)
+RUPORFUGPRUGPI
+@MAIN
+
+
+
+
+```
+
+
+    
