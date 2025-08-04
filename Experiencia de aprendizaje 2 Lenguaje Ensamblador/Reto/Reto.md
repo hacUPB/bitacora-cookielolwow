@@ -296,21 +296,26 @@ int main() {
    return 0;
 }
 ```
+**RAE1**
 ```asm
 (MAIN)
-ASYFGDJSFI
-@SUMA
 
+@SUMA
+0:JMP
+
+(RETURN_A_MAIN)
+(END)
+@END
+0;JMP
 
 
 (SUMA)
-RUPORFUGPRUGPI
-@MAIN
 
-
-
-
+@RETURN_A_MAIN
+0:JMP
 ```
+**RAE2**
+Cree las dos funciones de (MAIN) y de (SUMA). Dentro de main se salta a suma y luego en suma se salta a una funcion nueva (RETURN_A_MAIN) que esta dentro de main despues del salto para asi darle continuidad al proceso, sin olvidarse del loop de end luego de finalizar.
 
 
     
