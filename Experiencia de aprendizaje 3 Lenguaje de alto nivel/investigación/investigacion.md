@@ -160,4 +160,20 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 
 ```
--En el código implementé la función mouseReleased para que, al soltar el botón izquierdo del mouse, la variable selectedSphere se establezca en nullptr. De esta forma, cuando dejo de presionar el mouse, la esfera deja de actualizar su posición en el método update(), evitando que quede “pegada” al cursor
+En el código implementé la función mouseReleased para que, al soltar el botón izquierdo del mouse, la variable selectedSphere se establezca en nullptr. De esta forma, cuando dejo de presionar el mouse, la esfera deja de actualizar su posición en el método update(), evitando que quede “pegada” al cursor
+
+## Actividad 7
+
+**Primer codigo**
+Qué sucede cuando presionas la tecla “c”?Qué sucede cuando presionas la tecla “c”?
+
+- No ocurrió nada, Se creó un objeto en el stack, se guardó su dirección, pero al terminar la función el objeto desapareció.
+
+**Segundo codigo**
+¿Qué sucede cuando presionas la tecla “c”?
+
+- Se crea un objeto en el heap, se guarda su dirección en globalVector y el objeto sigue existiendo después de que la función termina.
+
+¿Por qué ocurre esto?
+
+-El heap mantiene los objetos hasta que se liberen explícitamente con delete, por lo que el puntero sigue siendo válido mientras no se libere la memoria.
