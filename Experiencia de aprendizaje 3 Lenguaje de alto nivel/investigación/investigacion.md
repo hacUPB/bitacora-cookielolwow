@@ -176,4 +176,4 @@ Qué sucede cuando presionas la tecla “c”?Qué sucede cuando presionas la te
 
 ¿Por qué ocurre esto?
 
--El heap mantiene los objetos hasta que se liberen explícitamente con delete, por lo que el puntero sigue siendo válido mientras no se libere la memoria.
+- El heap mantiene los objetos hasta que se liberen explícitamente con delete, por lo que el puntero sigue siendo válido mientras no se libere la memoria.
