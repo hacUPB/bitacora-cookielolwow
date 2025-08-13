@@ -101,3 +101,63 @@ void ofApp::mouseMoved(int x, int y) {
 	particleColor = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 
  ```
+## Actividad 5
+
+¿Cuál es la definición de un puntero?
+
+
+-Un puntero es una variable que almacena la dirección de memoria de otra variable u objeto, en lugar de almacenar directamente su valor.
+
+
+¿Dónde está el puntero?
+
+- En ffApp.H
+
+
+¿Cómo se inicializa el puntero?
+
+- vector<Sphere*> spheres;
+- Sphere* selectedSphere;
+
+
+¿Para qué se está usando el puntero?
+
+-En este programa el puntero selectedSphere sirve para:
+
+Guardar la referencia (dirección) de la esfera que el usuario selecciona con el mouse.
+
+Moverla en update() modificando sus coordenadas sin afectar a las demás.
+
+- Los punteros en el vector sirven para:
+
+Mantener todas las esferas creadas en memoria dinámica.
+
+Poder acceder a ellas y dibujarlas/actualizarlas cuando sea necesario.
+
+
+¿Qué es exactamente lo que está almacenado en el puntero?
+
+- SelectedSphere guarda la dirección de la esfera seleccionada.
+
+## Actividad 6
+
+- El problema del codigo es que cuando se selecciona una esfera ya no se puede deseleccionar.
+
+```cpp
+ofApp.h
+
+  void mouseReleased(int x, int y, int button);
+
+```
+```cpp
+ofApp.cpp
+
+void ofApp::mouseReleased(int x, int y, int button) {
+    if (button == OF_MOUSE_BUTTON_LEFT) {
+        selectedSphere = nullptr;
+    }
+}
+
+
+```
+-En el código implementé la función mouseReleased para que, al soltar el botón izquierdo del mouse, la variable selectedSphere se establezca en nullptr. De esta forma, cuando dejo de presionar el mouse, la esfera deja de actualizar su posición en el método update(), evitando que quede “pegada” al cursor
