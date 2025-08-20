@@ -234,7 +234,7 @@ void ofApp::draw(){
 }
 
 ```
-**Cuándo debo crear objetos en el heap y cuándo en memoria global?uándo debo crear objetos en el heap y cuándo en memoria global?**
+**Cuándo debo crear objetos en el heap y cuándo en memoria global?**
 - Los objetos en el heap se crean cuando necesito que duren más allá del alcance de una función o cuando no sé cuántos voy a necesitar, porque ahí puedo manejarlos dinámicamente con new y delete. Los objetos en memoria global se usan cuando quiero que estén disponibles para todo el programa sin importar en qué parte esté, aunque debo tener cuidado porque siempre ocupan memoria y pueden volver el código difícil de mantener.
 
 ## Actividad 9
