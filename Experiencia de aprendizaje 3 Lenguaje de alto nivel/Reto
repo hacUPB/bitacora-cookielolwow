@@ -1,4 +1,4 @@
-´´´cpp
+```cpp
 #include "ofApp.h"
 #include "ofMain.h"
 
@@ -10,8 +10,8 @@ int main() {
 
 	ofRunApp(new ofApp());
 }
-´´´
-´´´cpp
+```
+```cpp
 #include "ofApp.h"
 
 void ofApp::setup() {
@@ -135,9 +135,9 @@ bool ofApp::rayIntersectsSphere(const glm::vec3 & rayStart, const glm::vec3 & ra
 		return true;
 	}
 }
-´´´
+```
 
-´´´cpp
+```cpp
 #pragma once
 #include "ofMain.h"
 
@@ -166,5 +166,5 @@ private:
 	float distDiv = 50.0f;
 	float amplitude = 150.0f;
 };
-´´´
+```
 
