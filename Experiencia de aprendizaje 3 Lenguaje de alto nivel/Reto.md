@@ -167,4 +167,13 @@ private:
 	float amplitude = 150.0f;
 };
 ```
+<img width="1140" height="894" alt="image" src="https://github.com/user-attachments/assets/f624b562-cc39-4d81-a410-471b9b2bd697" />
+<img width="1207" height="907" alt="image" src="https://github.com/user-attachments/assets/11b0f26e-de09-41dc-86ca-56baec1ecb2a" />
+<img width="1071" height="841" alt="image" src="https://github.com/user-attachments/assets/91f1df0a-71bb-49e7-813b-9dfee1661a80" />
+
+uando arranca mi programa, creo una instancia de la clase ofApp con new. Esa instancia vive en el heap (el montón). Dentro de esa clase tengo un vector llamado spherePositions. Ese vector también utiliza el heap para guardar todos los puntos glm::vec3, la memoria se reserva de manera continua para ellos. Cada vez que le agrego más puntos con push_back, el vector se encarga solito de solicitar más espacio si ya no le cabe.
+
+Las variables locales que uso dentro de las funciones —cosas como x, y, z o rayStart— se guardan en la pila (stack) y desaparecen cuando la función termina.
+
+No uso variables globales en mi código. Todo se libera solito cuando el programa termina.
 
