@@ -116,6 +116,11 @@ Prompt para ChatGPT:
 
 ¿Dónde se almacenan los datos y métodos de una clase en C++ en la memoria? Explica el concepto de vtable y cómo se relaciona con los métodos virtuales.
 - Los atributos de un objeto se guardan en el stack o en el heap dependiendo de cómo lo cree. Los métodos no se guardan en cada objeto, sino en la sección de código del programa. Cuando una clase tiene métodos virtuales, aparece la vtable, que es como una tabla con direcciones de funciones para resolver qué método se ejecuta en tiempo de ejecución.
+- 
+## Exploración de métodos virtuales
+¿En qué parte de la memoria se encuentran las vtable de cada objeto?
+- EL vtable esta en la memoria global.
+<img width="510" height="61" alt="image" src="https://github.com/user-attachments/assets/0129c365-6bb2-476b-afff-eccfcf25b9ae" />
 
 ¿Cómo afecta la presencia de métodos virtuales al tamaño del objeto?
 
@@ -144,7 +149,7 @@ Prompt para ChatGPT: ¿Qué diferencia hay entre punteros a funciones y punteros
 En términos de memoria, un puntero ocupa lo mismo, pero un puntero a método requiere más pasos para ejecutarse porque debe ligarse al objeto.
 
 
-**Reflexión individual:**
+### **Reflexión individual:**
 
 
 ¿Dónde residen los datos y métodos de una clase en la memoria?
@@ -164,8 +169,21 @@ Prompt para ChatGPT:
 ¿Cómo implementa el compilador el encapsulamiento en C++? Si los miembros privados aún ocupan espacio en el objeto, ¿Qué impide que se acceda a ellos desde fuera de la clase?
 - El compilador es el que hace cumplir las reglas de acceso (private, protected, public). Los miembros privados sí ocupan espacio dentro del objeto, pero el compilador no deja que yo los use directamente desde afuera. Es más una regla de compilación que una barrera física.
 
+<img width="785" height="68" alt="image" src="https://github.com/user-attachments/assets/ed74a284-178a-42c8-bae6-32d0a69a81a2" />
+
+
   
 ### Hagamos un poco de hackers y rompamos el encapsulamiento
+
+**Antes**
+
+
+<img width="407" height="23" alt="image" src="https://github.com/user-attachments/assets/eb800bc0-94a1-4dc5-b075-78a0b5fc881a" />
+
+**Despúes**
+
+
+<img width="325" height="62" alt="image" src="https://github.com/user-attachments/assets/c43fb644-14b7-419a-a39f-2f5b9b25c809" />
 
  ¿Qué es el encapsulamiento y cuál es su propósito en la programación orientada a objetos?
 - Es esconder los detalles internos de una clase para que solo se pueda interactuar con ella a través de lo que se expone (métodos públicos). Sirve para proteger los datos y que no cualquiera pueda cambiarlos sin control.
@@ -188,6 +206,9 @@ Prompt para ChatGPT:
 ### Herencia y la Relación en Memoria
 
 
+<img width="623" height="76" alt="image" src="https://github.com/user-attachments/assets/f2e448a7-7c09-4a38-9c83-96bd0bb5783e" />
+
+
 ¿Cómo se organizan los atributos en memoria?
 
 - Cuando una clase hereda de otra, los atributos de la clase base se guardan primero, y después siguen los de la clase derivada. Es como si el objeto derivado “contuviera” la parte base más su propia parte.
@@ -198,11 +219,14 @@ Prompt para ChatGPT:
 Prompt para ChatGPT: explícame cómo se organiza en memoria un objeto de una clase derivada en C++. ¿Cómo se almacenan los atributos de la clase base y de la derivada?
 
 ### Polimorfismo y Vtables en detalle
+
+<img width="389" height="75" alt="image" src="https://github.com/user-attachments/assets/165e3a6e-1b24-4b25-881f-7aeeb77b1258" />
+
 1. Analizar con un depurador: observa cómo se resuelven las llamadas a makeSound() en tiempo de ejecución.
 
    
     ¿Cómo utiliza el programa las vtables para el polimorfismo?
-    - Cada objeto con métodos virtuales guarda un puntero oculto a una vtable. Esa vtable tiene las direcciones de las funciones que corresponden al tipo real del objeto. Cuando llamo un método virtual desde un puntero a la clase base, el programa va a la vtable para decidir qué función ejecutar. Por eso un Dog ladra y un Cat maúlla, aunque los llame desde un Animal*.
+    - Cada objeto con métodos virtuales guarda un puntero oculto a una vtable. Esa vtable tiene las direcciones de las funciones que corresponden al tipo real del objeto. Cuando llamo un método virtual desde un puntero a la clase base, el programa va a la vtable para decidir qué función ejecutar. Por eso un Dog hace bark y un Cat hace meow, aunque los llame desde un Animal*.
 
     ¿Cuál es el impacto en el rendimiento?
     - al impacto en el rendimiento del polimorfismo, entendí que sí existe un pequeño costo porque cada vez que se llama a un método virtual el programa no va directo a la función, sino que primero consulta la vtable para saber a dónde saltar. Eso significa que hay una especie de “paso intermedio” en cada llamada, lo que lo hace un poco más lento que una función normal.
@@ -213,7 +237,7 @@ Prompt para ChatGPT: ¿Cómo funciona el polimorfismo en C++ a nivel interno? Ex
     Cuando yo creo un objeto de una clase con herencia polimórfica, ese objeto lleva un puntero oculto llamado vptr, que apunta a la vtable de su clase real. Entonces, cuando llamo a un método virtual a través de un puntero o referencia de la clase base, el programa no va directo a la función, sino que usa ese vptr para buscar en la vtable cuál implementación ejecutar.
 
 
-2. Reflexión Individual:
+### Reflexión Individual:
 - En esta sesión me di cuenta de que el encapsulamiento no es una barrera física sino una regla del compilador. Los datos privados siguen estando en memoria y es posible leerlos con punteros, aunque no sea seguro. También entendí que en herencia los atributos se organizan de forma lineal (primero los de la base, luego los de la derivada), y que el polimorfismo funciona gracias a las vtables que guardan las direcciones de los métodos correctos en tiempo de ejecución.
 
 
