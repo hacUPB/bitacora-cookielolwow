@@ -516,4 +516,4 @@ En Visual Studio se puede medir el uso de memoria para ver si los cambios realme
 <img width="1181" height="500" alt="image" src="https://github.com/user-attachments/assets/f89f47a7-28cf-43b0-bb1c-ec18a2213230" />
 
 
-Al aumentar la amplitud de las olas, eñl rendimiento seguia igual y no se veia afectado.
+Al aumentar la amplitud de las olas, el rendimiento seguia igual y no se veia afectado.
