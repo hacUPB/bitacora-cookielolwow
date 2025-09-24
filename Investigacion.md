@@ -248,4 +248,272 @@ Prompt para ChatGPT: ¿Cómo funciona el polimorfismo en C++ a nivel interno? Ex
     Polimorfismo → se hace posible gracias a un mecanismo interno (vtable) que conecta cada objeto con su comportamiento real.
 
     Esto me ayuda a entender que C++ me da poder y flexibilidad, pero también mucha responsabilidad en cómo uso la memoria y diseño las clases.
+# RETO
 
+CODIGOS 
+```c++
+#include "ofApp.h"
+
+//--------------------------------------------------------------
+void ofApp::setup() {
+    ofSetWindowShape(800, 400);
+    ofSetBackgroundColor(30, 100, 150);
+    ofSetFrameRate(60);
+
+    t = 0;
+    frames = 120;
+
+    for (int y = 0; y < ofGetHeight(); y += 5) {
+        baseY.push_back(y);
+    }
+
+    // podemos empezar con una onda base
+    waveStack.push(std::make_unique<SimpleWave>(8.0f, 0.03f, 0.0f, 1.0f));
+}
+
+//--------------------------------------------------------------
+void ofApp::update() {
+    t += 1.0f / frames;
+    if (t > 10000.0f) t = fmod(t, 1000.0f); // evitar overflow float muy grande
+}
+
+//--------------------------------------------------------------
+void ofApp::draw() {
+    // Fondo semitransparente para estela
+    ofSetColor(30, 100, 150, 20);
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+
+    // Si no hay waves, no dibujamos
+    const auto& waves = waveStack.getWaves();
+
+    for (auto y : baseY) {
+        // color por línea (puedes ajustar mapeos)
+        float hue = ofMap(sinf((t * TWO_PI + y) * 0.01f), -1, 1, 160, 200);
+        float bri = ofMap(cosf((t * TWO_PI + y) * 0.008f), -1, 1, 60, 100);
+        ofSetColor(ofColor::fromHsb((int)hue, 200, (int)bri));
+
+        ofBeginShape();
+        for (int x = 0; x < ofGetWidth(); x += 5) {
+
+            // baseWave sigue presente
+            float baseWave = sinf(t * TWO_PI + x * 0.03f + y * 0.01f) * 10.0f;
+
+            // Ahora aplicamos cada Wave de la pila como capas separadas
+            float stacked = 0.0f;
+            for (const auto& wptr : waves) {
+                // llamado polimórfico -> virtual sample()
+                stacked += wptr->sample((float)x, y, t * TWO_PI);
+            }
+
+            float extraWave = stacked;
+            ofVertex(x, y + baseWave + extraWave);
+        }
+        ofEndShape();
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key) {
+    if (key == 'a') {
+        addRandomWave();
+    } else if (key == 'd') {
+        waveStack.pop();
+    } else if (key == 'r') {
+        waveStack.clear();
+    }
+}
+
+void ofApp::addRandomWave() {
+    float amp = ofRandom(5.0f, 20.0f);
+    float freq = ofRandom(0.01f, 0.06f);
+    float phase = ofRandom(0.0f, TWO_PI);
+    float speed = ofRandom(0.2f, 2.0f);
+    waveStack.push(std::make_unique<SimpleWave>(amp, freq, phase, speed));
+}
+
+```C++
+#pragma once
+#include "ofMain.h"
+#include "WaveStack.h"
+#include "SimpleWave.h"
+
+class ofApp : public ofBaseApp {
+public:
+    void setup() override;
+    void update() override;
+    void draw() override;
+    void keyPressed(int key) override;
+
+private:
+    float t; // tiempo normalizado
+    int frames;
+    std::vector<float> baseY;
+    WaveStack waveStack;
+
+    // helpers
+    void addRandomWave();
+};
+
+```
+
+```C++
+#pragma once
+#include "ofMain.h"
+#include "WaveStack.h"
+#include "SimpleWave.h"
+
+class ofApp : public ofBaseApp {
+public:
+    void setup() override;
+    void update() override;
+    void draw() override;
+    void keyPressed(int key) override;
+
+private:
+    float t; // tiempo normalizado
+    int frames;
+    std::vector<float> baseY;
+    WaveStack waveStack;
+
+    // helpers
+    void addRandomWave();
+};
+
+```
+```C++
+#pragma once
+#include "ofMain.h"
+class Wave {
+public:
+    virtual ~Wave() = default;
+  
+    virtual float sample(float x, float baseY, float t) const = 0;
+
+    virtual float amplitude() const = 0;
+};
+class SimpleWave : public Wave {
+private:
+    float _amplitude;
+    float _frequency;
+    float _phase;
+    float _speed; 
+
+public:
+    SimpleWave(float amplitude = 10.0f, float frequency = 0.03f, float phase = 0.0f, float speed = 1.0f)
+        : _amplitude(amplitude), _frequency(frequency), _phase(phase), _speed(speed) {
+    }
+
+    float sample(float x, float baseY, float t) const override {
+        float phaseNow = _phase + t * _speed;
+        return sinf(x * _frequency + baseY * 0.01f + phaseNow) * _amplitude;
+    }
+
+    float amplitude() const override { return _amplitude; }
+
+    
+    void setAmplitude(float a) { _amplitude = a; }
+    void setFrequency(float f) { _frequency = f; }
+    void setPhase(float p) { _phase = p; }
+    void setSpeed(float s) { _speed = s; }
+};
+class WaveStack {
+private:
+    std::vector<std::unique_ptr<Wave>> waves;
+
+public:
+    WaveStack() = default;
+    ~WaveStack() = default;
+
+    void push(std::unique_ptr<Wave> w) {
+        waves.push_back(std::move(w));
+    }
+
+  
+    void pop() {
+        if (!waves.empty()) waves.pop_back();
+    }
+
+    void clear() {
+        waves.clear();
+    }
+
+    
+    float totalAmplitude() const {
+        float s = 0;
+        for (const auto& w : waves) s += w->amplitude();
+        return s;
+    }
+
+    
+    const std::vector<std::unique_ptr<Wave>>& getWaves() const { return waves; }
+    size_t size() const { return waves.size(); }
+};
+class ofApp : public ofBaseApp {
+public:
+    void setup() override;
+    void update() override;
+    void draw() override;
+    void keyPressed(int key) override;
+
+private:
+    float t; 
+    int frames;
+    std::vector<float> baseY;
+    WaveStack waveStack;
+
+    
+    void addRandomWave();
+};
+
+```
+
+## Pruebas
+
+
+<img width="838" height="451" alt="image" src="https://github.com/user-attachments/assets/3fc1daac-afa5-40aa-936a-205a89ebe143" />
+
+
+## RAE 1
+
+<img width="791" height="409" alt="image" src="https://github.com/user-attachments/assets/c77e6152-184f-414f-856b-23f45a42537e" />
+
+
+- Para agregar nuevas olas se usa la tecla a, esto modifica el patron. 
+
+<img width="776" height="405" alt="image" src="https://github.com/user-attachments/assets/1d2fd854-6888-42e3-96c6-de972f2e1e58" />
+
+-  Para eliminar olas se usa la tecla d, esto ajusta el comportamiento
+
+<img width="773" height="398" alt="image" src="https://github.com/user-attachments/assets/c87808fb-46fb-4bfa-a6be-585c1f5522ba" />
+
+- Para borrar todas las olas se usa la tecla r, esto muestra e sistema limpio.
+
+**Resultado final**
+
+
+https://github.com/user-attachments/assets/b69b73a1-ce40-451f-91f7-858c5c0775a3
+
+## RAE 2
+<img width="403" height="147" alt="image" src="https://github.com/user-attachments/assets/57d7f1bc-aeac-4798-8eb6-f00f24c3d1a1" />
+
+
+Durante la prueba de la pila de ondas (WaveStack) presioné las teclas configuradas:
+
+- Con la tecla a agregué ondas nuevas. En la consola aparecieron mensajes confirmando el push con la amplitud de la onda y el tamaño actualizado de la pila.
+- Con la tecla d eliminé la última onda agregada (pop). En la consola apareció el mensaje con la amplitud eliminada y el tamaño de la pila después de la operación. 
+- Con la tecla r limpié toda la pila (clear). En la consola se imprimió el número total de ondas eliminadas y en la aplicación quedó solo la onda base.
+
+ Reducir llamadas de dibujo innecesarias:
+- Dibujar menos vértices o reducir la resolución de las ondas (por ejemplo, aumentar el paso de x += 5 a x += 10) baja la carga en la GPU sin perder demasiado en lo visual.
+
+Evitar cálculos repetidos:
+- Precalcular valores que no cambian en cada frame (como posiciones base en Y) y solo recalcular lo que depende del tiempo.
+
+
+
+En Visual Studio se puede medir el uso de memoria para ver si los cambios realmente afectan al rendimiento.
+
+<img width="1181" height="500" alt="image" src="https://github.com/user-attachments/assets/f89f47a7-28cf-43b0-bb1c-ec18a2213230" />
+
+
+Al aumentar la amplitud de las olas, eñl rendimiento seguia igual y no se veia afectado.
