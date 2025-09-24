@@ -256,213 +256,209 @@ CODIGOS
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    ofSetWindowShape(800, 400);
-    ofSetBackgroundColor(30, 100, 150);
-    ofSetFrameRate(60);
+	ofSetWindowShape(800, 400);
+	ofSetBackgroundColor(30, 100, 150);
+	ofSetFrameRate(60);
 
-    t = 0;
-    frames = 120;
+	t = 0.0f;
+	frames = 120;
 
-    for (int y = 0; y < ofGetHeight(); y += 5) {
-        baseY.push_back(y);
-    }
+	baseY.clear();
+	for (int y = 0; y < ofGetHeight(); y += 5) {
+		baseY.push_back((float)y);
+	}
 
-    // podemos empezar con una onda base
-    waveStack.push(std::make_unique<SimpleWave>(8.0f, 0.03f, 0.0f, 1.0f));
+	// Empezar con una SimpleWave por defecto
+	waveStack.push(std::make_unique<SimpleWave>(8.0f, 0.03f, 0.0f, 1.0f));
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    t += 1.0f / frames;
-    if (t > 10000.0f) t = fmod(t, 1000.0f); // evitar overflow float muy grande
+	t += 1.0f / frames;
+	if (t > 10000.0f) {
+		t = fmod(t, 1000.0f);
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    // Fondo semitransparente para estela
-    ofSetColor(30, 100, 150, 20);
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	// Fondo semitransparente para estela
+	ofSetColor(30, 100, 150, 20);
+	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
 
-    // Si no hay waves, no dibujamos
-    const auto& waves = waveStack.getWaves();
+	const auto & waves = waveStack.getWaves();
 
-    for (auto y : baseY) {
-        // color por línea (puedes ajustar mapeos)
-        float hue = ofMap(sinf((t * TWO_PI + y) * 0.01f), -1, 1, 160, 200);
-        float bri = ofMap(cosf((t * TWO_PI + y) * 0.008f), -1, 1, 60, 100);
-        ofSetColor(ofColor::fromHsb((int)hue, 200, (int)bri));
+	for (auto y : baseY) {
+		float hue = ofMap(sinf((t * TWO_PI + y) * 0.01f), -1.0f, 1.0f, 160, 200);
+		float bri = ofMap(cosf((t * TWO_PI + y) * 0.008f), -1.0f, 1.0f, 60, 100);
+		ofSetColor(ofColor::fromHsb((int)hue, 200, (int)bri));
 
-        ofBeginShape();
-        for (int x = 0; x < ofGetWidth(); x += 5) {
+		ofBeginShape();
+		for (int x = 0; x < ofGetWidth(); x += 5) {
+			float baseWave = sinf(t * TWO_PI + x * 0.03f + y * 0.01f) * 10.0f;
+			float stacked = 0.0f;
 
-            // baseWave sigue presente
-            float baseWave = sinf(t * TWO_PI + x * 0.03f + y * 0.01f) * 10.0f;
+			for (const auto & wptr : waves) {
+				stacked += wptr->sample((float)x, (float)y, t * TWO_PI);
+			}
 
-            // Ahora aplicamos cada Wave de la pila como capas separadas
-            float stacked = 0.0f;
-            for (const auto& wptr : waves) {
-                // llamado polimórfico -> virtual sample()
-                stacked += wptr->sample((float)x, y, t * TWO_PI);
-            }
-
-            float extraWave = stacked;
-            ofVertex(x, y + baseWave + extraWave);
-        }
-        ofEndShape();
-    }
+			float extraWave = stacked;
+			ofVertex(x, y + baseWave + extraWave);
+		}
+		ofEndShape();
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-    if (key == 'a') {
-        addRandomWave();
-    } else if (key == 'd') {
-        waveStack.pop();
-    } else if (key == 'r') {
-        waveStack.clear();
-    }
+	if (key == 'a') {
+		addRandomWave();
+	} else if (key == 'd') {
+		waveStack.pop();
+	} else if (key == 'r') {
+		waveStack.clear();
+	}
 }
 
+//--------------------------------------------------------------
 void ofApp::addRandomWave() {
-    float amp = ofRandom(5.0f, 20.0f);
-    float freq = ofRandom(0.01f, 0.06f);
-    float phase = ofRandom(0.0f, TWO_PI);
-    float speed = ofRandom(0.2f, 2.0f);
-    waveStack.push(std::make_unique<SimpleWave>(amp, freq, phase, speed));
+	if (ofRandom(1.0f) < 0.5f) {
+		// SimpleWave aleatoria
+		float amp = ofRandom(5.0f, 20.0f);
+		float freq = ofRandom(0.01f, 0.06f);
+		float phase = ofRandom(0.0f, TWO_PI);
+		float speed = ofRandom(0.2f, 2.0f);
+		waveStack.push(std::make_unique<SimpleWave>(amp, freq, phase, speed));
+	} else {
+		// NoiseWave aleatoria
+		float amp = ofRandom(2.0f, 10.0f);
+		float scale = ofRandom(0.05f, 0.2f);
+		float speed = ofRandom(0.5f, 2.0f);
+		waveStack.push(std::make_unique<NoiseWave>(amp, scale, speed));
+	}
 }
 
-```C++
-#pragma once
-#include "ofMain.h"
-#include "WaveStack.h"
-#include "SimpleWave.h"
-
-class ofApp : public ofBaseApp {
-public:
-    void setup() override;
-    void update() override;
-    void draw() override;
-    void keyPressed(int key) override;
-
-private:
-    float t; // tiempo normalizado
-    int frames;
-    std::vector<float> baseY;
-    WaveStack waveStack;
-
-    // helpers
-    void addRandomWave();
-};
 
 ```
 
-```C++
-#pragma once
-#include "ofMain.h"
-#include "WaveStack.h"
-#include "SimpleWave.h"
 
-class ofApp : public ofBaseApp {
-public:
-    void setup() override;
-    void update() override;
-    void draw() override;
-    void keyPressed(int key) override;
-
-private:
-    float t; // tiempo normalizado
-    int frames;
-    std::vector<float> baseY;
-    WaveStack waveStack;
-
-    // helpers
-    void addRandomWave();
-};
-
-```
 ```C++
 #pragma once
 #include "ofMain.h"
 class Wave {
 public:
-    virtual ~Wave() = default;
-  
-    virtual float sample(float x, float baseY, float t) const = 0;
+	virtual ~Wave() = default;
 
-    virtual float amplitude() const = 0;
+	virtual float sample(float x, float baseY, float t) const = 0;
+
+	virtual float amplitude() const = 0;
 };
 class SimpleWave : public Wave {
 private:
-    float _amplitude;
-    float _frequency;
-    float _phase;
-    float _speed; 
+	float _amplitude;
+	float _frequency;
+	float _phase;
+	float _speed;
 
 public:
-    SimpleWave(float amplitude = 10.0f, float frequency = 0.03f, float phase = 0.0f, float speed = 1.0f)
-        : _amplitude(amplitude), _frequency(frequency), _phase(phase), _speed(speed) {
-    }
+	SimpleWave(float amplitude = 10.0f, float frequency = 0.03f, float phase = 0.0f, float speed = 1.0f)
+		: _amplitude(amplitude)
+		, _frequency(frequency)
+		, _phase(phase)
+		, _speed(speed) {
+	}
 
-    float sample(float x, float baseY, float t) const override {
-        float phaseNow = _phase + t * _speed;
-        return sinf(x * _frequency + baseY * 0.01f + phaseNow) * _amplitude;
-    }
+	float sample(float x, float baseY, float t) const override {
+		float phaseNow = _phase + t * _speed;
+		return sinf(x * _frequency + baseY * 0.01f + phaseNow) * _amplitude;
+	}
 
-    float amplitude() const override { return _amplitude; }
+	float amplitude() const override { return _amplitude; }
 
-    
-    void setAmplitude(float a) { _amplitude = a; }
-    void setFrequency(float f) { _frequency = f; }
-    void setPhase(float p) { _phase = p; }
-    void setSpeed(float s) { _speed = s; }
+	void setAmplitude(float a) { _amplitude = a; }
+	void setFrequency(float f) { _frequency = f; }
+	void setPhase(float p) { _phase = p; }
+	void setSpeed(float s) { _speed = s; }
 };
+class NoiseWave : public Wave {
+private:
+	float _amplitude;
+	float _scale; // escala espacial
+	float _speed; // velocidad de cambio temporal
+
+public:
+	NoiseWave(float amplitude = 5.0f,
+		float scale = 0.1f,
+		float speed = 1.0f)
+		: _amplitude(amplitude)
+		, _scale(scale)
+		, _speed(speed) { }
+
+	float sample(float x, float baseY, float t) const override {
+		// Usamos ofNoise de openFrameworks
+		float nx = x * _scale;
+		float ny = baseY * _scale;
+		float nt = t * _speed;
+		float noiseVal = ofNoise(nx, ny, nt); // [0,1]
+		float shifted = (noiseVal - 0.5f) * 2.0f; // [-1,1]
+		return shifted * _amplitude;
+	}
+
+	float amplitude() const override {
+		return _amplitude;
+	}
+
+	void setAmplitude(float a) { _amplitude = a; }
+	void setScale(float s) { _scale = s; }
+	void setSpeed(float s) { _speed = s; }
+};
+
 class WaveStack {
 private:
-    std::vector<std::unique_ptr<Wave>> waves;
+	std::vector<std::unique_ptr<Wave>> waves;
 
 public:
-    WaveStack() = default;
-    ~WaveStack() = default;
+	WaveStack() = default;
+	~WaveStack() = default;
 
-    void push(std::unique_ptr<Wave> w) {
-        waves.push_back(std::move(w));
-    }
+	void push(std::unique_ptr<Wave> w) {
+		waves.push_back(std::move(w));
+	}
 
-  
-    void pop() {
-        if (!waves.empty()) waves.pop_back();
-    }
+	void pop() {
+		if (!waves.empty()) waves.pop_back();
+	}
 
-    void clear() {
-        waves.clear();
-    }
+	void clear() {
+		waves.clear();
+	}
 
-    
-    float totalAmplitude() const {
-        float s = 0;
-        for (const auto& w : waves) s += w->amplitude();
-        return s;
-    }
+	float totalAmplitude() const {
+		float s = 0;
+		for (const auto & w : waves)
+			s += w->amplitude();
+		return s;
+	}
 
-    
-    const std::vector<std::unique_ptr<Wave>>& getWaves() const { return waves; }
-    size_t size() const { return waves.size(); }
+	const std::vector<std::unique_ptr<Wave>> & getWaves() const { return waves; }
+	size_t size() const { return waves.size(); }
 };
+
+
 class ofApp : public ofBaseApp {
 public:
-    void setup() override;
-    void update() override;
-    void draw() override;
-    void keyPressed(int key) override;
+	void setup() override;
+	void update() override;
+	void draw() override;
+	void keyPressed(int key) override;
 
 private:
-    float t; 
-    int frames;
-    std::vector<float> baseY;
-    WaveStack waveStack;
+	float t; // tiempo normalizado
+	int frames;
+	std::vector<float> baseY;
+	WaveStack waveStack;
 
-    
-    void addRandomWave();
+	void addRandomWave(); // auxiliar para agregar onda aleatoria
 };
 
 ```
@@ -478,7 +474,7 @@ private:
 <img width="791" height="409" alt="image" src="https://github.com/user-attachments/assets/c77e6152-184f-414f-856b-23f45a42537e" />
 
 
-- Para agregar nuevas olas se usa la tecla a, esto modifica el patron. 
+- Para agregar nuevas olas se usa la tecla a, esto modifica el patron con las noisy waves. 
 
 <img width="776" height="405" alt="image" src="https://github.com/user-attachments/assets/1d2fd854-6888-42e3-96c6-de972f2e1e58" />
 
@@ -491,7 +487,11 @@ private:
 **Resultado final**
 
 
-https://github.com/user-attachments/assets/b69b73a1-ce40-451f-91f7-858c5c0775a3
+
+
+https://github.com/user-attachments/assets/d4f5af8f-96a9-46c7-9b00-4343ea7744a8
+
+
 
 ## RAE 2
 <img width="403" height="147" alt="image" src="https://github.com/user-attachments/assets/57d7f1bc-aeac-4798-8eb6-f00f24c3d1a1" />
@@ -499,9 +499,13 @@ https://github.com/user-attachments/assets/b69b73a1-ce40-451f-91f7-858c5c0775a3
 
 Durante la prueba de la pila de ondas (WaveStack) presioné las teclas configuradas:
 
-- Con la tecla a agregué ondas nuevas. En la consola aparecieron mensajes confirmando el push con la amplitud de la onda y el tamaño actualizado de la pila.
+- Con la tecla a agregué ondas nuevas y se volvian "noisy" . En la consola aparecieron mensajes confirmando el push con la amplitud de la onda y el tamaño actualizado de la pila.
 - Con la tecla d eliminé la última onda agregada (pop). En la consola apareció el mensaje con la amplitud eliminada y el tamaño de la pila después de la operación. 
 - Con la tecla r limpié toda la pila (clear). En la consola se imprimió el número total de ondas eliminadas y en la aplicación quedó solo la onda base.
+
+  
+En este proyecto, implementé el concepto de polimorfismo con la clae padre "Wave" que declara métodos virtuales puros como sample() y amplitude(). Luego, creé clases hijas de esta ( SimpleWave y NoiseWave), cada una con su propia implementación de estos métodos. Gracias al polimorfismo, cada tipo de onda respondió de manera adecuada a la llamada al método sample().
+
 
  Reducir llamadas de dibujo innecesarias:
 - Dibujar menos vértices o reducir la resolución de las ondas (por ejemplo, aumentar el paso de x += 5 a x += 10) baja la carga en la GPU sin perder demasiado en lo visual.
