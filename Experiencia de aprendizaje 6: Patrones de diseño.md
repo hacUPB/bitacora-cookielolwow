@@ -86,3 +86,277 @@ void WarpState::update(Particle * particle) {
 }
 ```
 
+## RETO
+**Idea:** un sistema de ondas que se comporta distinto según su “estado emocional”:
+
+
+- **CalmState:** ondas suaves y lentas.
+
+
+- **ChaosState:** ondas turbulentas y con ruido.
+
+
+- **PulseState:** ondas que responden al movimiento del mouse o clics.
+
+Cada vez que el usuario interactue con el sistema las ondas tendran diferentes estilos visuales, generados por una Factory (líneas, puntos, curvas).
+
+asi me lo imagino
+
+```
+src/
+├─ main.cpp
+├─ ofApp.h / ofApp.cpp
+├─ Wave.h / Wave.cpp
+├─ WaveFactory.h / WaveFactory.cpp
+├─ WaveState.h / WaveState.cpp
+├─ Observer.h / Observer.cpp
+├─ InputSubject.h / InputSubject.cpp
+└─ tests.cpp
+
+```
+
+**Cómo aplicaria los patrones¿¿**
+
+**Observer:**
+
+	InputSubject notifica a los observadores (las ondas y el gestor de estado) cuando el usuario mueva el mouse o haga clic.
+
+	Así el input está desacoplado de la lógica de las ondas.
+
+**Factory:**
+
+	WaveFactory crea distintos tipos de ondas (LineWave, DotWave, CurveWave).
+
+	Permite que el sistema sea extensible sin modificar código existente.
+
+**State:**
+
+	CalmState, ChaosState, PulseState implementan el comportamiento dinámico de las ondas.
+
+	El estado se cambia desde los eventos observados.
+
+
+
+
+### OfApp.cpp ###
+
+```cpp
+#include "ofApp.h"
+
+// ----------------------------------------------------
+// STATE IMPLEMENTATIONS
+// ----------------------------------------------------
+
+// Calm: ondas suaves
+void CalmState::update(Wave* wave, float time){
+    wave->amplitude = ofLerp(wave->amplitude, 50, 0.02);
+    wave->frequency = ofLerp(wave->frequency, 0.005, 0.02);
+}
+
+// Chaos: alta frecuencia y ruido
+void ChaosState::update(Wave* wave, float time){
+    wave->amplitude = ofNoise(time) * 200;
+    wave->frequency = 0.02 + ofNoise(time * 2) * 0.03;
+}
+
+// Pulse: responde al tiempo
+void PulseState::update(Wave* wave, float time){
+    wave->amplitude = 80 + sin(time * 5) * 50;
+    wave->frequency = 0.015 + 0.005 * sin(time * 3);
+}
+
+// ----------------------------------------------------
+// APP
+// ----------------------------------------------------
+void ofApp::setup(){
+    ofBackground(10);
+    ofSetFrameRate(60);
+    ofSetCircleResolution(80);
+
+    // Creamos 3 tipos de ondas usando la Factory
+    waves.push_back(WaveFactory::createWave(LINE));
+    waves.push_back(WaveFactory::createWave(DOT));
+    waves.push_back(WaveFactory::createWave(CURVE));
+
+    // Las registramos como observadores
+    for(auto* w : waves) addObserver(w);
+}
+
+void ofApp::update(){
+    float t = ofGetElapsedTimef();
+    for(auto* w : waves) w->update(t);
+}
+
+void ofApp::draw(){
+    for(auto* w : waves) w->draw();
+
+    // UI
+    ofDrawBitmapStringHighlight("Press any key → Calm waves", 20, 20);
+    ofDrawBitmapStringHighlight("Move mouse → Pulse waves", 20, 40);
+    ofDrawBitmapStringHighlight("Click → Chaos waves", 20, 60);
+    ofDrawBitmapStringHighlight("Current FPS: " + ofToString(ofGetFrameRate(), 0), 20, 80);
+}
+
+void ofApp::mousePressed(int x, int y, int button){ notify("mousePressed"); }
+void ofApp::mouseMoved(int x, int y ){ notify("mouseMoved"); }
+void ofApp::keyPressed(int key){ notify("keyPressed"); }
+
+```
+
+### OfApp.h ###
+
+```h
+#pragma once
+#include "ofMain.h"
+
+// ----------------------------------------------------
+// OBSERVER PATTERN
+// ----------------------------------------------------
+class IObserver {
+public:
+    virtual void onNotify(const std::string& event) = 0;
+};
+
+class Subject {
+protected:
+    std::vector<IObserver*> observers;
+public:
+    void addObserver(IObserver* o){ observers.push_back(o); }
+    void removeObserver(IObserver* o){
+        observers.erase(std::remove(observers.begin(), observers.end(), o), observers.end());
+    }
+    void notify(const std::string& event){
+        for(auto* o : observers) o->onNotify(event);
+    }
+};
+
+// ----------------------------------------------------
+// STATE PATTERN
+// ----------------------------------------------------
+class Wave; // forward declaration
+
+class WaveState {
+public:
+    virtual ~WaveState() = default;
+    virtual void update(Wave* wave, float time) = 0;
+    virtual std::string name() const = 0;
+};
+
+class CalmState : public WaveState {
+public:
+    void update(Wave* wave, float time) override;
+    std::string name() const override { return "Calm"; }
+};
+
+class ChaosState : public WaveState {
+public:
+    void update(Wave* wave, float time) override;
+    std::string name() const override { return "Chaos"; }
+};
+
+class PulseState : public WaveState {
+public:
+    void update(Wave* wave, float time) override;
+    std::string name() const override { return "Pulse"; }
+};
+
+// ----------------------------------------------------
+// WAVE CLASS
+// ----------------------------------------------------
+class Wave : public IObserver {
+public:
+    ofColor color;
+    float amplitude, frequency;
+    WaveState* state;
+    int styleType; // para diferenciar visualmente los tipos creados por la Factory
+
+    Wave(): amplitude(100), frequency(0.01f), state(nullptr), styleType(0) {
+        color = ofColor::fromHsb(ofRandom(255), 200, 255);
+    }
+
+    void setState(WaveState* newState){
+        if(state) delete state;
+        state = newState;
+    }
+
+    void update(float time){
+        if(state) state->update(this, time);
+    }
+
+    void draw(){
+        ofNoFill();
+        ofSetColor(color);
+        ofSetLineWidth(2);
+
+        // Visual diferente según el estilo generado por la Factory
+        if(styleType == 0){ // Línea simple
+            ofBeginShape();
+            for(int x = 0; x < ofGetWidth(); x++){
+                float y = ofGetHeight()/2 + sin(x * frequency + ofGetElapsedTimef()) * amplitude;
+                ofVertex(x, y);
+            }
+            ofEndShape();
+        }
+        else if(styleType == 1){ // Puntos
+            for(int x = 0; x < ofGetWidth(); x+=5){
+                float y = ofGetHeight()/2 + sin(x * frequency + ofGetElapsedTimef()) * amplitude;
+                ofDrawCircle(x, y, 1.5);
+            }
+        }
+        else if(styleType == 2){ // Curva irregular
+            ofBeginShape();
+            for(int x = 0; x < ofGetWidth(); x+=3){
+                float noise = ofNoise(x * 0.01, ofGetElapsedTimef()) * 50;
+                float y = ofGetHeight()/2 + sin(x * frequency + ofGetElapsedTimef()) * amplitude + noise;
+                ofVertex(x, y);
+            }
+            ofEndShape();
+        }
+    }
+
+    void onNotify(const std::string& event) override {
+        if(event == "mousePressed") setState(new ChaosState());
+        else if(event == "mouseMoved") setState(new PulseState());
+        else if(event == "keyPressed") setState(new CalmState());
+    }
+};
+
+// ----------------------------------------------------
+// FACTORY PATTERN
+// ----------------------------------------------------
+enum WaveType { LINE, DOT, CURVE };
+
+class WaveFactory {
+public:
+    static Wave* createWave(WaveType type){
+        Wave* w = new Wave();
+        w->styleType = static_cast<int>(type);
+        if(type == DOT) w->color.setSaturation(255);
+        if(type == CURVE) w->color.setHue(ofRandom(255));
+        w->setState(new CalmState());
+        return w;
+    }
+};
+
+// ----------------------------------------------------
+// MAIN APPLICATION
+// ----------------------------------------------------
+class ofApp : public ofBaseApp, public Subject {
+public:
+    std::vector<Wave*> waves;
+
+    void setup() override;
+    void update() override;
+    void draw() override;
+
+    void mousePressed(int x, int y, int button) override;
+    void mouseMoved(int x, int y ) override;
+    void keyPressed(int key) override;
+};
+
+```
+
+**RESULTADO VIDEO**
+
+
+https://youtu.be/-jwHAJAK9Y0
