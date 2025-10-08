@@ -597,6 +597,13 @@ void ofApp::mouseMoved(int x, int y) { notify("mouseMoved"); }
 void ofApp::keyPressed(int key) { notify("keyPressed"); }
 
 ```
-profe pq me puso ese reto 
+profe no se ve pero la verde es la unica que reacciona
+
+
+<img width="1025" height="769" alt="image" src="https://github.com/user-attachments/assets/5ee79cd7-3087-4202-8239-52ce9a117814" />
+
+
+
+profe pq me puso ese reto 😭😭😭😭😭
 
 <img width="236" height="253" alt="image" src="https://github.com/user-attachments/assets/4781126c-ffb7-47b8-9eca-ab4e57ee69f7" />
