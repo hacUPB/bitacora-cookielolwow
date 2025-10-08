@@ -344,3 +344,9 @@ public:
 
 
 https://youtu.be/-jwHAJAK9Y0
+
+
+**NOTAS**
+
+
+Corregi la apmlitud que tiene la onda line para que asi no se combine con la de dot y se puedan diferenciar las tres :)
