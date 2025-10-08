@@ -99,22 +99,6 @@ void WarpState::update(Particle * particle) {
 - **PulseState:** ondas que responden al movimiento del mouse o clics.
 
 Cada vez que el usuario interactue con el sistema las ondas tendran diferentes estilos visuales, generados por una Factory (líneas, puntos, curvas).
-
-asi me lo imagino
-
-```
-src/
-├─ main.cpp
-├─ ofApp.h / ofApp.cpp
-├─ Wave.h / Wave.cpp
-├─ WaveFactory.h / WaveFactory.cpp
-├─ WaveState.h / WaveState.cpp
-├─ Observer.h / Observer.cpp
-├─ InputSubject.h / InputSubject.cpp
-└─ tests.cpp
-
-```
-
 **Cómo aplicaria los patrones¿¿**
 
 **Observer:**
