@@ -215,3 +215,7 @@ shader.setUniform2f("resolution", image.getWidth(), image.getHeight());
     - El vertex shader recibe la informacion de los vertices del plano.
 	- Segun yo, el fragment shader usa dos shaders. Primero el shaderBlurx que desenfoca horizontalmente. Y el shaderBlurY para desenfocar pero verticalmente.
 ## Actividad 3
+- ¿Qué es un uniform?
+
+  
+- ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
