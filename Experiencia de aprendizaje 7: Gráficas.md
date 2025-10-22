@@ -158,51 +158,60 @@ shader.setUniform2f("resolution", image.getWidth(), image.getHeight());
 - Analiza el código de los shaders. ¿Qué hace cada uno?
 	- El vertex shader sirve como puente nada mas de las coordenadas.
     - Recibe las tres texturas (tex0, tex1, tex2) y la máscara (imageMask). Usa los canales R, G y B de la máscara para mezclar las imágenes.
-    - 
+      
 **SEPTIMO EJEMPLO**
 
 - ¿Cómo funciona?
-    - 
+    - Es un canva que va dibujando en tiempo real. En este caso, usamos un FBO  donde se va pintando con una brochita. Esa brocha puede ser normal o tipo borrador, y lo que dibuja sirve como una textura de máscara para combinar otras imágenes  dentro del shader.
       
 - ¿Qué resultados obtuviste?
 
+<img width="485" height="363" alt="image" src="https://github.com/user-attachments/assets/2de2188f-b8d9-4c7a-bf6e-3cc526e02d31" />
 
 
 - ¿Estás usando un vertex shader?
- - 
+ 	- SI, lo mismo de procesar coordenadas.
 - ¿Estás usando un fragment shader?
- -      
+ 	- SI, el fragment shader hace la mezcla visual.
 
 - Analiza el código de los shaders. ¿Qué hace cada uno?
-    -
+    - El vertex shader recibe la informacion de los vertices del plano y pasa las coordenadas al fragment shader.
+	- El fragment shader combina las texturas usando la mascara. Toma el color de las texturas y decide el color que va ausar la brocha asi como pinturita.
+
+   
 **OCTAVO EJEMPLO**
 
 - ¿Cómo funciona?
-    - 
+    - Es un plano que se arruga asi todo cool cuando mueves el mouse hacia la esquina superior derecha. Lo que pasa es que se genera un plano que se mueve con ruide de Perlin. Crea una imagen que los pixeles reciven un valor de ruido que cambia con el tiempo. 
+      
       
 - ¿Qué resultados obtuviste?
 
+<img width="983" height="704" alt="image" src="https://github.com/user-attachments/assets/7ab5e628-3479-44bf-bf99-838f1f7e8fe5" />
 
 
 - ¿Estás usando un vertex shader?
- - 
+  	- Sí. Manipula la posicion de los vertices del plano, mueve la malla permitiendo que la superficie se mueva asi cool.
 - ¿Estás usando un fragment shader?
- -   
+ 	-   Si, el fragment define el color de cada pixel.
 - Analiza el código de los shaders. ¿Qué hace cada uno?
-    -
+    - El vertex shader usa los valores de la textura para modificar los valores de la posicion en z para dar esa sensacion como de paño arrugado como por el relieve.
+ 
+      
 **NOVENO EJEMPLO**
 
 - ¿Cómo funciona?
-    - 
-      
+    - La misma imagen que llevamos usando le aplica un desenfoque, usa dos shaders para cada eje ( x & y).
 - ¿Qué resultados obtuviste?
 
+<img width="404" height="308" alt="image" src="https://github.com/user-attachments/assets/8d5079fd-7952-4954-af1a-8715d0898476" />
 
 
 - ¿Estás usando un vertex shader?
- - 
+	 - Si, lo usamos para manejar las coordenadas de los vertices y la imagen.
 - ¿Estás usando un fragment shader?
- -   
+ 	-   SI, calcula el color de los pixeles simulando el bllur.
 - Analiza el código de los shaders. ¿Qué hace cada uno?
-    -
+    - El vertex shader recibe la informacion de los vertices del plano.
+	- Segun yo, el fragment shader usa dos shaders. Primero el shaderBlurx que desenfoca horizontalmente. Y el shaderBlurY para desenfocar pero verticalmente.
 ## Actividad 3
