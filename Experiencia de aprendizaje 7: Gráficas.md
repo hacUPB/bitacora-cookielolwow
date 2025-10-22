@@ -55,7 +55,7 @@
 - ¿Cómo funciona?
   - Crea un plano en tres dimensiones en la mitad de la pantalla que de deforma con el shader. El color del plano cambia dependiendo de la posición del mouse en X (de magenta a cian) y la rotación del plano cambia con el mouse en Y.
 - ¿Qué resultados obtuviste?
-<img width="1010" height="799" alt="image" src="https://github.com/user-attachments/assets/a4a2a0bb-ede9-4586-86e1-db3c6879de49" />
+<img width="505" height="400" alt="image" src="https://github.com/user-attachments/assets/a4a2a0bb-ede9-4586-86e1-db3c6879de49" />
 
   
 - ¿Estás usando un vertex shader?
@@ -67,9 +67,119 @@
   - Vertex Shader: Usa la variable time para animar los vértices del plano.
   - Fragment Shader: Usa la variable globalColor que se envía automáticamente cuando se llama a ofSetColor().
 **TERCER EJEMPLO**
+
 - ¿Cómo funciona?
+    - El programa crea una especie de plano que ocupa toda la pantalla y le aplica un shader. Ese shader hace que el plano cambie visualmente según donde muevas el mouse.
+Básicamente, el código calcula la posición del mouse y el color que debería tener (entre morado y azul) y se lo manda al shader. Entonces, cuando uno mueve el mouse, el shader reacciona cambiando el color y generando un  efecto visual como de ojo de pescado en la posicion del mouse.
 - ¿Qué resultados obtuviste?
+
+  
+  <img width="400" height="286" alt="image" src="https://github.com/user-attachments/assets/9a3924bc-8660-4592-bf67-4567d57c40f0" />
+
+
 - ¿Estás usando un vertex shader?
+    - Sí. Es el que se encarga de deformar el plano.
 - ¿Estás usando un fragment shader?
+    - Sí. Ese se encarga del color, hace que cambie entre morado y azul dependiendo de la posicion del mouse.
 - Analiza el código de los shaders. ¿Qué hace cada uno?
+    - El vertex shader edita el plano, deforma el plano con el cursor.
+    - El fragment shader se encarga del color final que vemos en pantalla, y por eso es el que genera el cambio de color de un lado al otro.
+
+```cpp
+  
+// color changes from magenta to blue when moving the mouse from left to right.
+float percentX = mouseX / (float)ofGetWidth();
+percentX = ofClamp(percentX, 0, 1);
+ofFloatColor colorLeft = ofColor::magenta;
+ofFloatColor colorRight = ofColor::blue;
+ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
+```
+
+**CUARTO EJEMPLO**
+
+- ¿Cómo funciona?
+    - Se carga una imagen sobre un plano y el shader se encarga de seguir el movimiento del mouse para poder mover el plano o la imagen por decirlo asi.
+      
+- ¿Qué resultados obtuviste?
+
+  <img width="490" height="467" alt="image" src="https://github.com/user-attachments/assets/a636d786-2224-4797-978f-cb1738cac7dc" />
+
+
+
+- ¿Estás usando un vertex shader?
+ - Sí, el código lo usa. Es la parte del shader que se encarga de crear los vertices para crear el plano
+- ¿Estás usando un fragment shader?
+ - Si, el fragment shader toma texturas de la imagen y decide como acomodar cada pedazo del plano.
+   
+
+**QUINTO EJEMPLO**
+
+- ¿Cómo funciona?
+    - 
+      
+- ¿Qué resultados obtuviste?
+
+<img width="392" height="296" alt="image" src="https://github.com/user-attachments/assets/c33329ad-1dc4-478e-8c19-856f469db3a0" />
+
+
+- ¿Estás usando un vertex shader?
+ - 
+- ¿Estás usando un fragment shader?
+ - 
+
+**SEXTO EJEMPLO**
+
+- ¿Cómo funciona?
+    - 
+      
+- ¿Qué resultados obtuviste?
+
+
+
+- ¿Estás usando un vertex shader?
+ - 
+- ¿Estás usando un fragment shader?
+ -   
+
+**SEPTIMO EJEMPLO**
+
+- ¿Cómo funciona?
+    - 
+      
+- ¿Qué resultados obtuviste?
+
+
+
+- ¿Estás usando un vertex shader?
+ - 
+- ¿Estás usando un fragment shader?
+ -      
+
+
+**OCTAVO EJEMPLO**
+
+- ¿Cómo funciona?
+    - 
+      
+- ¿Qué resultados obtuviste?
+
+
+
+- ¿Estás usando un vertex shader?
+ - 
+- ¿Estás usando un fragment shader?
+ -   
+**NOVENO EJEMPLO**
+
+- ¿Cómo funciona?
+    - 
+      
+- ¿Qué resultados obtuviste?
+
+
+
+- ¿Estás usando un vertex shader?
+ - 
+- ¿Estás usando un fragment shader?
+ -   
 ## Actividad 3
