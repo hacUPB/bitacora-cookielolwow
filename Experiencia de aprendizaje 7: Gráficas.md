@@ -107,15 +107,15 @@ ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
 
 
 - ¿Estás usando un vertex shader?
- - Sí, el código lo usa. Es la parte del shader que se encarga de crear los vertices para crear el plano
+   - Sí, el código lo usa. Es la parte del shader que se encarga de crear los vertices para crear el plano
 - ¿Estás usando un fragment shader?
- - Si, el fragment shader toma texturas de la imagen y decide como acomodar cada pedazo del plano.
+   - Si, el fragment shader toma texturas de la imagen y decide como acomodar cada pedazo del plano.
    
 
 **QUINTO EJEMPLO**
 
 - ¿Cómo funciona?
-    - 
+    - Carga dos imagenes, una normal y otra que va a funcionar como mascara. Luego se usa un shader que las va a combinar como con el efecto de masking.
       
 - ¿Qué resultados obtuviste?
 
@@ -123,10 +123,23 @@ ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
 
 
 - ¿Estás usando un vertex shader?
- - 
+   - Si, su funcion en este caso es simplemente preparar vertices y coordenadas UV para que el fragment shader pueda apicar los efectos visuales.
 - ¿Estás usando un fragment shader?
- - 
+   - Si, este hace la parte visual. Combina la imagen con la mascara pixel por pixel de acuerdo a los valores del mask.
+- Analiza el código de los shaders. ¿Qué hace cada uno?
+    - El vertex shader procesa los vertices de la imagen, o sea los puntos que van a definir su posicion en pantalla.
+```cpp
 
+	// draw a white rectangle for background.
+	ofDrawRectangle(0, 0, image.getWidth(), image.getHeight());
+```
+ - El fragment shader combino las imagenes con el efecto de masking. 
+    
+```cpp
+shader.setUniformTexture("imageMask", imageMask.getTexture(), 1);
+shader.setUniform2f("resolution", image.getWidth(), image.getHeight());
+
+```
 **SEXTO EJEMPLO**
 
 - ¿Cómo funciona?
@@ -140,7 +153,8 @@ ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
  - 
 - ¿Estás usando un fragment shader?
  -   
-
+- Analiza el código de los shaders. ¿Qué hace cada uno?
+    -
 **SEPTIMO EJEMPLO**
 
 - ¿Cómo funciona?
@@ -155,7 +169,8 @@ ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
 - ¿Estás usando un fragment shader?
  -      
 
-
+- Analiza el código de los shaders. ¿Qué hace cada uno?
+    -
 **OCTAVO EJEMPLO**
 
 - ¿Cómo funciona?
@@ -169,6 +184,8 @@ ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
  - 
 - ¿Estás usando un fragment shader?
  -   
+- Analiza el código de los shaders. ¿Qué hace cada uno?
+    -
 **NOVENO EJEMPLO**
 
 - ¿Cómo funciona?
@@ -182,4 +199,6 @@ ofFloatColor colorMix = colorLeft.getLerped(colorRight, percentX);
  - 
 - ¿Estás usando un fragment shader?
  -   
+- Analiza el código de los shaders. ¿Qué hace cada uno?
+    -
 ## Actividad 3
