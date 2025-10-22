@@ -143,18 +143,22 @@ shader.setUniform2f("resolution", image.getWidth(), image.getHeight());
 **SEXTO EJEMPLO**
 
 - ¿Cómo funciona?
-    - 
+    - Tenemos una camara, una imagen y un video. Y luego usando un shader con una mascara se combinan los tres. La mascara se mueve con la posicion del mouse y el shader se encarga de mezclar las tres texturas según los valores RGB de la mascara, o sea dependiando del color de cada zona de la mascara.
       
 - ¿Qué resultados obtuviste?
 
+<img width="638" height="749" alt="image" src="https://github.com/user-attachments/assets/19e7a130-916f-4048-be3f-c2c22759bd56" />
 
 
 - ¿Estás usando un vertex shader?
- - 
+ 	- SI, pero nuevamente para manejar las coordenadas y pasar esta información al fragment shader.
 - ¿Estás usando un fragment shader?
- -   
+	 - SI, este decide el color de cada pixel en vase a las texturas y la mascara.
+
 - Analiza el código de los shaders. ¿Qué hace cada uno?
-    -
+	- El vertex shader sirve como puente nada mas de las coordenadas.
+    - Recibe las tres texturas (tex0, tex1, tex2) y la máscara (imageMask). Usa los canales R, G y B de la máscara para mezclar las imágenes.
+    - 
 **SEPTIMO EJEMPLO**
 
 - ¿Cómo funciona?
