@@ -231,7 +231,7 @@ shader.setUniform2f("resolution", image.getWidth(), image.getHeight());
 - Modifica el código de la actividad para cambiar el color de cada uno de los píxeles de la pantalla personalizando el fragment shader.
 
 
-<img width="804" height="577" alt="image" src="https://github.com/user-attachments/assets/983ff2e3-4e42-4f94-9c4c-28d2087ae15c" />
+<img width="1023" height="787" alt="image" src="https://github.com/user-attachments/assets/598212cd-70f8-4d7f-9ee2-69482f965acc" />
 
 
 En esta parte modifiqué el fragment shader para que cambiara el color de cada píxel según su posición y el paso del tiempo. La idea era usar el uniforme time (que viene desde el programa principal) junto con las coordenadas del píxel (gl_FragCoord) para generar una animación de color en movimiento.
@@ -241,38 +241,290 @@ El shader quedó así:
 #version 150
 
 uniform float time;
-uniform vec2 u_resolution;
+uniform vec4 globalColor;
+
 out vec4 outputColor;
 
-void main(){
-    vec2 st = gl_FragCoord.xy / u_resolution;
+void main()
+{
+    vec2 uv = gl_FragCoord.xy / vec2(1024.0, 768.0); // usa el tamaño de la ventana
 
-    float r = 0.5 + 0.5 * sin(time + st.x * 10.0);
-    float g = 0.5 + 0.5 * sin(time + st.y * 10.0);
-    float b = 0.5 + 0.5 * sin(time + (st.x + st.y) * 10.0);
+    float wave = sin((uv.x + time * 0.5) * 6.2831) * 0.5 + 0.5;
 
-    outputColor = vec4(r, g, b, 1.0);
+    vec3 color = mix(vec3(uv.y, wave, 1.0 - uv.x), globalColor.rgb, 0.3);
+
+    outputColor = vec4(color, 1.0);
 }
+
 ```
 
 Con este código, el color de cada píxel debería cambiar de forma continua creando un efecto tipo “ondas de color”.
-Sin embargo, no logré que se moviera la animación. Probé revisando el time y el shader.begin() en el draw(), pero la imagen seguía estática. Aun así, sí se ven los colores diferentes en cada parte del plano, solo que no cambian con el tiempo.
+
 
 ## Actividad 4
-En esta parte intenté seguir el paso del tutorial llamado “Adding some interactivity”, donde se modifica el vertex shader y el fragment shader para que los vértices del plano reaccionen a la posición del mouse.
 
-La idea era que el plano se deformara cuando el puntero se acercara, generando un efecto de repulsión, y que el color cambiara gradualmente de magenta a azul según la posición del mouse en la pantalla.
+<img width="826" height="649" alt="image" src="https://github.com/user-attachments/assets/ec0ef3fb-49e7-4261-8e28-dab4ea59804f" />
 
-Los cambios principales fueron:
-
-En ofApp::draw() añadí varias líneas con shader.setUniform1f(), shader.setUniform2f() y shader.setUniform4fv() para enviar al shader los valores del rango, la posición del mouse y el color.
-
-En el vertex shader, modifiqué gl_Position con base en la distancia al mouse (distance(pos.xy, mousePos)).
-
-En el fragment shader, utilicé uniform vec4 mouseColor para pintar los píxeles con el color interpolado.
-
-Sin embargo, no logré que se moviera el plano ni que reaccionara al mouse. El shader compila, pero el plano se queda completamente estático y solo muestra un color plano.
 - ¿Qué hace el código del ejemplo?
+	- El código hace que el plano cambie y se mueva según la posición del mouse. Cuando paso el cursor por encima, los vértices del plano se deforman un poco, como si se repelieran del mouse, y además el color va cambiando de magenta a azul dependiendo de dónde esté el cursor.
 - ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
+  	- En el código principal se envían datos al shader, como la posición del mouse o los colores, y el shader usa esa información para modificar lo que se ve en pantalla. El vertex shader cambia la forma del plano, moviendo los puntos según la distancia al mouse, y el fragment shader cambia el color. Básicamente, el código y los shaders están conectados: uno manda los datos y los otros los usan para crear los efectos visuales.
 - Realiza modificaciones a ofApp.cpp y al vertex shader para conseguir otros comportamientos.
 - Realiza modificaciones al fragment shader para conseguir otros comportamientos.
+<img width="829" height="616" alt="image" src="https://github.com/user-attachments/assets/b1d138f0-85f0-4faa-94ab-825e72ade994" />
+
+
+Empecé modificando el archivo ofApp.cpp, donde mantuve la estructura principal del código, pero cambié el valor de mouseRange para hacerlo más amplio y que el efecto se notara a mayor distancia del cursor. También ajusté la forma en la que el color cambia: en lugar de depender de la posición horizontal del mouse, lo hice variar según su posición vertical. Así, al mover el cursor de abajo hacia arriba, el color del plano pasa de tonos amarillos a cian, creando una transición más llamativa y diferente a la original.
+
+Luego pasé al vertex shader, donde quise alterar el comportamiento de los vértices. En el ejemplo original, los vértices se alejaban del mouse, generando un efecto de repulsión. Yo invertí esa lógica para que, en cambio, los vértices fueran atraídos hacia el cursor, como si el plano tuviera un movimiento de “succión” o respiración. Además, reduje un poco la fuerza de ese desplazamiento para que el efecto se sintiera más suave y fluido visualmente.
+
+Finalmente, en el fragment shader probé algo más visual: añadí una variación de brillo en el color, haciendo que el tono se vuelva más intenso dependiendo de la posición del fragmento. Esto genera una especie de brillo dinámico sobre la superficie, que le da más vida al plano y hace que no se vea estático.
+
+## Reto
+
+
+Para esta actividad desarrollé una aplicación interactiva en openFrameworks que utiliza shaders para modificar una malla. La aplicación crea un plano lleno de vértices que se van deformando constantemente, generando un efecto de ondas y movimiento. Además, el movimiento del mouse influye sobre los vértices, haciendo que se eleven o bajen dependiendo de la distancia. Esto le da una sensación de interacción directa, como si el cursor “tocara” la superficie.
+
+
+
+El fragment shader cambia los colores de cada parte del plano dependiendo de su posición y del tiempo, logrando un efecto de degradado dinámico que cambia lentamente mientras la aplicación corre. Cuando se acerca el mouse, los colores también se iluminan un poco más, simulando una luz suave sobre el área que uno toca.
+
+
+
+![Grabación-2025-10-27-174522](https://github.com/user-attachments/assets/175ee3f4-63c6-4643-ba56-a633579249a6)
+
+
+OfApp.h
+```
+#pragma once
+#include "ofMain.h"
+
+class ofApp : public ofBaseApp {
+public:
+	void setup() override;
+	void update() override;
+	void draw() override;
+
+	void mouseMoved(int x, int y) override;
+	void keyPressed(int key) override;
+
+private:
+	ofPlanePrimitive plane;
+	ofVboMesh mesh; 
+	ofShader shader;
+	float timeSeconds = 0.0f;
+	glm::vec2 mousePos = { 0.0f, 0.0f };
+	bool useWireframe = false;
+};
+
+```
+OfApp.cpp
+```
+#include "ofApp.h"
+
+void ofApp::setup() {
+	ofSetVerticalSync(true);
+	ofDisableArbTex(); 
+	ofBackground(10);
+
+	
+	float planeScale = 0.9f;
+	int planeWidth = ofGetWidth() * planeScale;
+	int planeHeight = ofGetHeight() * planeScale;
+	int gridSize = 10; 
+	int columns = planeWidth / gridSize;
+	int rows = planeHeight / gridSize;
+
+	plane.set(planeWidth, planeHeight, columns, rows, OF_PRIMITIVE_TRIANGLES);
+	plane.setPosition(ofGetWidth() * 0.5f, ofGetHeight() * 0.5f, 0);
+	mesh = plane.getMesh();
+
+
+	if (ofIsGLProgrammableRenderer()) {
+		shader.load("shadersGL3/shader.vert", "shadersGL3/shader.frag");
+	} else {
+		ofLogError() << "Se recomienda usar renderer programable (GL3).";
+		shader.load("shadersGL2/shader"); 
+	}
+
+	mousePos = glm::vec2(ofGetMouseX(), ofGetMouseY());
+}
+
+void ofApp::update() {
+	timeSeconds = ofGetElapsedTimef();
+}
+
+void ofApp::draw() {
+	ofEnableDepthTest();
+
+	shader.begin();
+
+	shader.setUniform1f("uTime", timeSeconds);
+	shader.setUniform2f("uResolution", ofGetWidth(), ofGetHeight());
+	shader.setUniform2f("uMouse", mousePos);
+	shader.setUniform1i("uWireframe", useWireframe ? 1 : 0);
+
+	
+	mesh.draw();
+
+	shader.end();
+
+	ofDisableDepthTest();
+
+
+	ofSetColor(255);
+	ofDrawBitmapString("Move mouse to deform. Press 'w' to toggle wireframe. Press 's' to save screenshot.", 10, 20);
+}
+
+
+
+void ofApp::mouseMoved(int x, int y) {
+	mousePos = glm::vec2(x, y);
+}
+
+void ofApp::keyPressed(int key) {
+	if (key == 'w') useWireframe = !useWireframe;
+	if (key == 's') {
+		std::string filename = "screenshot_" + ofGetTimestampString() + ".png";
+		ofSaveScreen(filename);
+		ofLogNotice() << "Saved " << filename;
+	}
+}
+
+```
+
+Vertex
+```
+#version 150
+
+uniform mat4 modelViewProjectionMatrix;
+in vec4 position;
+in vec3 normal;
+in vec2 texcoord;
+
+out vec3 vNormal;
+out vec2 vTexcoord;
+out vec3 vPositionWorld;
+
+uniform float uTime;
+uniform vec2 uResolution;
+uniform vec2 uMouse;
+uniform int uWireframe;
+
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+
+float noise(in vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    float a = hash(i + vec2(0.0,0.0));
+    float b = hash(i + vec2(1.0,0.0));
+    float c = hash(i + vec2(0.0,1.0));
+    float d = hash(i + vec2(1.0,1.0));
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(a, b, u.x) + (c - a)* u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+}
+
+void main() {
+ 
+    vNormal = normal;
+    vTexcoord = texcoord;
+
+   
+    vec2 mouseN = (uMouse / uResolution) * 2.0 - 1.0; // -1..1
+    vec2 posN = (position.xy / uResolution) * 2.0 - 1.0;
+
+   
+    float dist = length((position.xy / uResolution) - (uMouse / uResolution));
+
+
+    float freq = 6.0;
+    float amp = 30.0; // amplitud en pixeles para la Z
+    float wave = sin((position.x + position.y) * 0.01 * freq + uTime * 2.0) * 0.5;
+
+  
+    float n = noise(texcoord * 10.0 + vec2(uTime * 0.2));
+
+
+    float mouseInfluence = exp(-dist * 12.0); // caida exponencial
+    float zOffset = (wave * 0.6 + n * 0.4) * amp * (0.5 + mouseInfluence * 2.5);
+
+  
+    vec4 newPos = position;
+    newPos.z += zOffset;
+
+
+    newPos.xy += (normalize(posN - mouseN) * mouseInfluence * 15.0) * 0.1;
+
+    vPositionWorld = newPos.xyz;
+
+    gl_Position = modelViewProjectionMatrix * newPos;
+}
+
+```
+
+Frag
+```
+#version 150
+
+in vec3 vNormal;
+in vec2 vTexcoord;
+in vec3 vPositionWorld;
+
+out vec4 outputColor;
+
+uniform float uTime;
+uniform vec2 uResolution;
+uniform vec2 uMouse;
+uniform int uWireframe;
+
+void main() {
+ 
+    vec3 N = normalize(vNormal);
+
+   
+    float nY = (vPositionWorld.y + (uResolution.y * 0.5)) / uResolution.y; // 0..1
+    float nX = (vPositionWorld.x + (uResolution.x * 0.5)) / uResolution.x; // 0..1
+
+    vec3 colA = vec3(0.15, 0.45, 0.8); // azul
+    vec3 colB = vec3(0.9, 0.45, 0.2);  // naranja
+    vec3 base = mix(colA, colB, nY * 0.9 + 0.1 * sin(uTime));
+
+
+    float light = clamp(dot(N, vec3(0.0, 0.0, 1.0)), 0.0, 1.0);
+    vec3 color = base * (0.5 + light * 0.6);
+
+    // Añadimos un highlight alrededor del mouse (en pantalla)
+    vec2 fragPos = (gl_FragCoord.xy / uResolution);
+    vec2 mouseN = uMouse / uResolution;
+    float dist = distance(fragPos, mouseN);
+    float highlight = smoothstep(0.2, 0.0, dist); // 0..1
+    color += vec3(1.0, 0.9, 0.6) * highlight * 0.4;
+
+
+    if (uWireframe == 1) {
+        
+        vec2 f = fract(vTexcoord * 40.0);
+        float line = step(0.02, min(f.x, f.y)) * step(0.02, min(1.0 - f.x, 1.0 - f.y));
+        color *= mix(0.2, 1.0, line);
+    }
+
+    outputColor = vec4(color, 1.0);
+}
+
+```
+En el código de ofApp, se manejan los uniformes del shader, se actualiza el tiempo y la posición del mouse, y se dibuja la malla con los efectos del vertex y fragment shader. También añadí la opción de presionar la tecla "w" para cambiar a un modo de tipo “wireframe”, donde se pueden ver las líneas de la malla, y "s" para guardar capturas de pantalla como evidencia.
+
+**Pruebas en ofApp.cpp:**
+- Primero verifiqué que la aplicación cargara bien los shaders y mostrara el plano. Después probé que el movimiento del mouse se detectara correctamente y que los uniformes se enviaran al shader. También revisé que las teclas "w" y "s" cumplieran su función, alternando el wireframe y guardando imágenes del resultado.
+
+**Pruebas del vertex shader:**
+- Aquí comprobé que los vértices realmente se deformaran. Para eso observé si el plano tenía movimiento ondulado y si se elevaba más en las zonas donde movía el mouse. Cuando la malla se movía con fluidez y respondía bien al cursor, supe que el vertex shader estaba funcionando.
+
+**Pruebas del fragment shader:**
+- En este caso, revisé que los colores cambiaran de manera progresiva con el tiempo y que se vieran más brillantes cerca del mouse. También cambié valores dentro del shader para ver el impacto de cada parámetro (por ejemplo, la intensidad del color o la distancia del brillo), comprobando que respondiera como esperaba.
+
+**Pruebas del funcionamiento completo:**
+- Finalmente, probé toda la aplicación ejecutándola varias veces y observando el comportamiento general. Revisé que no hubiera errores en la consola, que los FPS se mantuvieran estables y que el efecto visual se mantuviera sin cortes. La aplicación se comportó bien: los vértices se movían, los colores cambiaban suavemente y la interacción con el mouse era fluida.
