@@ -216,6 +216,63 @@ shader.setUniform2f("resolution", image.getWidth(), image.getHeight());
 	- Segun yo, el fragment shader usa dos shaders. Primero el shaderBlurx que desenfoca horizontalmente. Y el shaderBlurY para desenfocar pero verticalmente.
 ## Actividad 3
 - ¿Qué es un uniform?
-
+	- Un uniform es una variable que le puedo enviar desde mi programa principal (C++) a los shaders, y su valor se mantiene igual durante toda la ejecución del shader mientras se dibuja. Es decir, no cambia por cada vértice o por cada píxel, sino que tiene el mismo valor para todos.
   
 - ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
+
+
+	Básicamente todo parte desde el ofApp.cpp. Ahí se configuran las formas (como el plano) y se carga el shader con shader.load(). Luego, cuando se ejecuta shader.begin() y shader.end(), lo que se dibuje entre esas dos líneas pasa por los shaders (el vertex y el fragment).
+
+	El vertex shader trabaja con cada vértice del plano (por ejemplo, moviéndolos con una onda usando sin(time)), y el fragment shader se encarga de cada píxel, decidiendo qué color tiene.
+
+	Los dos shaders reciben la información que uno les pasa desde el código con shader.setUniform...(). Por ejemplo, si hago shader.setUniform1f("time", ofGetElapsedTimef());, le estoy mandando el tiempo al shader para que lo use en sus cálculos. Así es como se comunican.
+
+
+- Modifica el código de la actividad para cambiar el color de cada uno de los píxeles de la pantalla personalizando el fragment shader.
+
+
+<img width="804" height="577" alt="image" src="https://github.com/user-attachments/assets/983ff2e3-4e42-4f94-9c4c-28d2087ae15c" />
+
+
+En esta parte modifiqué el fragment shader para que cambiara el color de cada píxel según su posición y el paso del tiempo. La idea era usar el uniforme time (que viene desde el programa principal) junto con las coordenadas del píxel (gl_FragCoord) para generar una animación de color en movimiento.
+
+El shader quedó así:
+```
+#version 150
+
+uniform float time;
+uniform vec2 u_resolution;
+out vec4 outputColor;
+
+void main(){
+    vec2 st = gl_FragCoord.xy / u_resolution;
+
+    float r = 0.5 + 0.5 * sin(time + st.x * 10.0);
+    float g = 0.5 + 0.5 * sin(time + st.y * 10.0);
+    float b = 0.5 + 0.5 * sin(time + (st.x + st.y) * 10.0);
+
+    outputColor = vec4(r, g, b, 1.0);
+}
+```
+
+Con este código, el color de cada píxel debería cambiar de forma continua creando un efecto tipo “ondas de color”.
+Sin embargo, no logré que se moviera la animación. Probé revisando el time y el shader.begin() en el draw(), pero la imagen seguía estática. Aun así, sí se ven los colores diferentes en cada parte del plano, solo que no cambian con el tiempo.
+
+## Actividad 4
+En esta parte intenté seguir el paso del tutorial llamado “Adding some interactivity”, donde se modifica el vertex shader y el fragment shader para que los vértices del plano reaccionen a la posición del mouse.
+
+La idea era que el plano se deformara cuando el puntero se acercara, generando un efecto de repulsión, y que el color cambiara gradualmente de magenta a azul según la posición del mouse en la pantalla.
+
+Los cambios principales fueron:
+
+En ofApp::draw() añadí varias líneas con shader.setUniform1f(), shader.setUniform2f() y shader.setUniform4fv() para enviar al shader los valores del rango, la posición del mouse y el color.
+
+En el vertex shader, modifiqué gl_Position con base en la distancia al mouse (distance(pos.xy, mousePos)).
+
+En el fragment shader, utilicé uniform vec4 mouseColor para pintar los píxeles con el color interpolado.
+
+Sin embargo, no logré que se moviera el plano ni que reaccionara al mouse. El shader compila, pero el plano se queda completamente estático y solo muestra un color plano.
+- ¿Qué hace el código del ejemplo?
+- ¿Cómo funciona el código de aplicación, los shaders y cómo se comunican estos?
+- Realiza modificaciones a ofApp.cpp y al vertex shader para conseguir otros comportamientos.
+- Realiza modificaciones al fragment shader para conseguir otros comportamientos.
