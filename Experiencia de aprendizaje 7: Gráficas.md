@@ -396,7 +396,7 @@ void ofApp::keyPressed(int key) {
 Vertex
 ```
 #version 150
-
+//Entrada
 uniform mat4 modelViewProjectionMatrix;
 in vec4 position;
 in vec3 normal;
@@ -405,7 +405,7 @@ in vec2 texcoord;
 out vec3 vNormal;
 out vec2 vTexcoord;
 out vec3 vPositionWorld;
-
+//Los uniforms
 uniform float uTime;
 uniform vec2 uResolution;
 uniform vec2 uMouse;
@@ -415,7 +415,7 @@ float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
-
+// Se crea el ruido
 float noise(in vec2 p) {
     vec2 i = floor(p);
     vec2 f = fract(p);
@@ -432,14 +432,14 @@ void main() {
     vNormal = normal;
     vTexcoord = texcoord;
 
-   
+   //Normaliza coordenadas del mouse y del vértice para tener valores entre -1 y 1.
     vec2 mouseN = (uMouse / uResolution) * 2.0 - 1.0; // -1..1
     vec2 posN = (position.xy / uResolution) * 2.0 - 1.0;
 
-   
+   //Calcula la distancia de los vertices al mouse
     float dist = length((position.xy / uResolution) - (uMouse / uResolution));
 
-
+// Aca se crea la onda
     float freq = 6.0;
     float amp = 30.0; // amplitud en pixeles para la Z
     float wave = sin((position.x + position.y) * 0.01 * freq + uTime * 2.0) * 0.5;
@@ -449,13 +449,12 @@ void main() {
 
 
     float mouseInfluence = exp(-dist * 12.0); // caida exponencial
+// Se combina las olas y el ruido  para dar el efermo de deformación
     float zOffset = (wave * 0.6 + n * 0.4) * amp * (0.5 + mouseInfluence * 2.5);
-
-  
     vec4 newPos = position;
     newPos.z += zOffset;
 
-
+// Aca se crea el efecto de atraccion al mouse
     newPos.xy += (normalize(posN - mouseN) * mouseInfluence * 15.0) * 0.1;
 
     vPositionWorld = newPos.xyz;
@@ -490,20 +489,23 @@ void main() {
 
     vec3 colA = vec3(0.15, 0.45, 0.8); // azul
     vec3 colB = vec3(0.9, 0.45, 0.2);  // naranja
+// Se crea el color base degradado que se ve al fondo
     vec3 base = mix(colA, colB, nY * 0.9 + 0.1 * sin(uTime));
 
-
+// Esta es la iluminación basica que es frontal
     float light = clamp(dot(N, vec3(0.0, 0.0, 1.0)), 0.0, 1.0);
     vec3 color = base * (0.5 + light * 0.6);
 
-    // Añadimos un highlight alrededor del mouse (en pantalla)
+  
     vec2 fragPos = (gl_FragCoord.xy / uResolution);
     vec2 mouseN = uMouse / uResolution;
+
+  // iluminacion alrededor del mouse
     float dist = distance(fragPos, mouseN);
     float highlight = smoothstep(0.2, 0.0, dist); // 0..1
     color += vec3(1.0, 0.9, 0.6) * highlight * 0.4;
 
-
+// Aca se muestra el wireframe
     if (uWireframe == 1) {
         
         vec2 f = fract(vTexcoord * 40.0);
