@@ -327,7 +327,7 @@ void ofApp::setup() {
 	ofDisableArbTex(); 
 	ofBackground(10);
 
-	
+	//cpu a gpu
 	float planeScale = 0.9f;
 	int planeWidth = ofGetWidth() * planeScale;
 	int planeHeight = ofGetHeight() * planeScale;
@@ -377,11 +377,11 @@ void ofApp::draw() {
 }
 
 
-
+//cpu a gpu
 void ofApp::mouseMoved(int x, int y) {
 	mousePos = glm::vec2(x, y);
 }
-
+//cpu a la gpu
 void ofApp::keyPressed(int key) {
 	if (key == 'w') useWireframe = !useWireframe;
 	if (key == 's') {
