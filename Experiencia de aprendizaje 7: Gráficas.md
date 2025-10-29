@@ -346,7 +346,7 @@ void ofApp::setup() {
 		ofLogError() << "Se recomienda usar renderer programable (GL3).";
 		shader.load("shadersGL2/shader"); 
 	}
-
+//cpu a gpu
 	mousePos = glm::vec2(ofGetMouseX(), ofGetMouseY());
 }
 
@@ -358,7 +358,7 @@ void ofApp::draw() {
 	ofEnableDepthTest();
 
 	shader.begin();
-
+// cpu a gpu
 	shader.setUniform1f("uTime", timeSeconds);
 	shader.setUniform2f("uResolution", ofGetWidth(), ofGetHeight());
 	shader.setUniform2f("uMouse", mousePos);
@@ -366,7 +366,7 @@ void ofApp::draw() {
 
 	
 	mesh.draw();
-
+//cpu a gpu
 	shader.end();
 
 	ofDisableDepthTest();
